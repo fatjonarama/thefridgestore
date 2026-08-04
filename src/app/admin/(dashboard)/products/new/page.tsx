@@ -1,15 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import ProductForm, { type ProductFormValues } from "@/components/ProductForm";
-import { useProducts } from "@/context/ProductsContext";
+import ProductForm from "@/components/ProductForm";
+import { createProduct, type ProductInput } from "@/db/mutations";
 
 export default function NewProductPage() {
   const router = useRouter();
-  const { addProduct } = useProducts();
 
-  function handleSubmit(values: ProductFormValues) {
-    addProduct(values);
+  async function handleSubmit(values: ProductInput) {
+    await createProduct(values);
     router.push("/admin/products");
   }
 

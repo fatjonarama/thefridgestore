@@ -1,15 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { logoutAdmin } from "@/app/admin/login/actions";
 
 const NAV = [
   { label: "Dashboard", href: "/admin" },
   { label: "Products", href: "/admin/products" },
+  { label: "Orders", href: "/admin/orders" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <main className="flex-1">
@@ -21,9 +24,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </span>
             <h1 className="font-display text-xl tracking-wide">CONTROL PANEL</h1>
           </div>
-          <Link href="/" className="text-xs text-white/50 hover:text-fridge-orange">
-            ← Back to store
-          </Link>
+          <div className="flex items-center gap-4 text-xs text-white/50">
+            <Link href="/" className="hover:text-fridge-orange">
+              ← Back to store
+            </Link>
+            <button
+              onClick={async () => {
+                await logoutAdmin();
+                router.push("/admin/login");
+                router.refresh();
+              }}
+              className="hover:text-fridge-orange"
+            >
+              Log out
+            </button>
+          </div>
         </div>
         <nav className="mx-auto flex w-full max-w-7xl gap-6 px-6 text-sm font-semibold tracking-wide">
           {NAV.map((item) => {

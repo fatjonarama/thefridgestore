@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useProducts } from "@/context/ProductsContext";
-import { CATEGORY_LABELS } from "@/lib/products";
+import { formatCents } from "@/lib/format";
+import { AUDIENCE_LABELS } from "@/lib/audience";
+import type { ProductRow } from "@/db/schema";
 
 export default function SearchOverlay({
   open,
@@ -13,17 +14,35 @@ export default function SearchOverlay({
   onClose: () => void;
 }) {
   const [query, setQuery] = useState("");
-  const { products } = useProducts();
+  const [results, setResults] = useState<ProductRow[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        CATEGORY_LABELS[p.category].toLowerCase().includes(q),
-    ).slice(0, 8);
-  }, [query, products]);
+  useEffect(() => {
+    const q = query.trim();
+    let cancelled = false;
+
+    const timeout = setTimeout(() => {
+      if (!q) {
+        setResults([]);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      fetch(`/api/search?q=${encodeURIComponent(q)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!cancelled) setResults(data.products);
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [query]);
 
   if (!open) return null;
 
@@ -58,7 +77,7 @@ export default function SearchOverlay({
             </button>
           </div>
 
-          {query.trim() && (
+          {query.trim() && !loading && (
             <ul className="max-h-96 overflow-y-auto">
               {results.length === 0 ? (
                 <li className="px-4 py-6 text-center text-sm text-white/40">
@@ -77,10 +96,12 @@ export default function SearchOverlay({
                           {p.name}
                         </span>
                         <span className="ml-2 text-xs text-white/40">
-                          {CATEGORY_LABELS[p.category]}
+                          {AUDIENCE_LABELS[p.audience]}
                         </span>
                       </span>
-                      <span className="text-sm text-fridge-orange">${p.price}</span>
+                      <span className="text-sm text-fridge-orange">
+                        {formatCents(p.priceCents)}
+                      </span>
                     </Link>
                   </li>
                 ))

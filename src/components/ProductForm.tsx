@@ -1,69 +1,82 @@
 "use client";
 
 import { useState } from "react";
-import { CATEGORIES, CATEGORY_LABELS, type Category, type Product } from "@/lib/products";
-
-export type ProductFormValues = Omit<Product, "slug">;
-
-const emptyValues: ProductFormValues = {
-  name: "",
-  price: 0,
-  category: "men",
-  sizes: [],
-  description: "",
-  tag: "",
-};
+import { AUDIENCES, AUDIENCE_LABELS, type Audience } from "@/lib/audience";
+import { dollarsToCents } from "@/lib/format";
+import type { ProductInput } from "@/db/mutations";
+import type { ProductRow } from "@/db/schema";
 
 export default function ProductForm({
   initial,
   submitLabel,
   onSubmit,
 }: {
-  initial?: Product;
+  initial?: ProductRow;
   submitLabel: string;
-  onSubmit: (values: ProductFormValues) => void;
+  onSubmit: (values: ProductInput) => void | Promise<void>;
 }) {
-  const [name, setName] = useState(initial?.name ?? emptyValues.name);
-  const [category, setCategory] = useState<Category>(
-    initial?.category ?? emptyValues.category,
+  const [name, setName] = useState(initial?.name ?? "");
+  const [audience, setAudience] = useState<Audience>(initial?.audience ?? "men");
+  const [category, setCategory] = useState(initial?.category ?? "");
+  const [subcategory, setSubcategory] = useState(initial?.subcategory ?? "");
+  const [price, setPrice] = useState(initial ? String(initial.priceCents / 100) : "");
+  const [compareAt, setCompareAt] = useState(
+    initial?.compareAtCents ? String(initial.compareAtCents / 100) : "",
   );
-  const [price, setPrice] = useState(initial ? String(initial.price) : "");
   const [sizesText, setSizesText] = useState(initial?.sizes.join(", ") ?? "");
-  const [description, setDescription] = useState(
-    initial?.description ?? emptyValues.description,
-  );
-  const [tag, setTag] = useState(initial?.tag ?? "");
+  const [colorsText, setColorsText] = useState(initial?.colors.join(", ") ?? "");
+  const [imagesText, setImagesText] = useState(initial?.images.join(", ") ?? "");
+  const [stock, setStock] = useState(initial ? String(initial.stock) : "0");
+  const [isNew, setIsNew] = useState(initial?.isNew ?? true);
+  const [active, setActive] = useState(initial?.active ?? true);
+  const [description, setDescription] = useState(initial?.description ?? "");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const parsedPrice = Number(price);
-    const sizes = sizesText
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const priceCents = dollarsToCents(price);
+    const sizes = sizesText.split(",").map((s) => s.trim()).filter(Boolean);
+    const colors = colorsText.split(",").map((s) => s.trim()).filter(Boolean);
+    const images = imagesText.split(",").map((s) => s.trim()).filter(Boolean);
+    const stockNum = Number(stock);
 
     const nextErrors: Record<string, string> = {};
     if (!name.trim()) nextErrors.name = "Name is required.";
-    if (!Number.isFinite(parsedPrice) || parsedPrice <= 0)
+    if (!category.trim()) nextErrors.category = "Category is required.";
+    if (!Number.isFinite(priceCents) || priceCents <= 0)
       nextErrors.price = "Enter a price greater than 0.";
     if (sizes.length === 0) nextErrors.sizes = "Add at least one size.";
     if (!description.trim()) nextErrors.description = "Description is required.";
+    if (!Number.isFinite(stockNum) || stockNum < 0)
+      nextErrors.stock = "Stock must be 0 or greater.";
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
       return;
     }
 
-    onSubmit({
-      name: name.trim(),
-      category,
-      price: parsedPrice,
-      sizes,
-      description: description.trim(),
-      tag: tag.trim() || undefined,
-    });
+    setSubmitting(true);
+    try {
+      await onSubmit({
+        name: name.trim(),
+        audience,
+        category: category.trim(),
+        subcategory: subcategory.trim() || undefined,
+        priceCents,
+        compareAtCents: compareAt ? dollarsToCents(compareAt) : null,
+        description: description.trim(),
+        images,
+        colors,
+        sizes,
+        stock: stockNum,
+        isNew,
+        active,
+      });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -77,29 +90,61 @@ export default function ProductForm({
         />
       </Field>
 
-      <Field label="Category">
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value as Category)}
-          className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-        >
-          {CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
-              {CATEGORY_LABELS[cat]}
-            </option>
-          ))}
-        </select>
-      </Field>
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Audience">
+          <select
+            value={audience}
+            onChange={(e) => setAudience(e.target.value as Audience)}
+            className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+          >
+            {AUDIENCES.map((a) => (
+              <option key={a} value={a}>
+                {AUDIENCE_LABELS[a]}
+              </option>
+            ))}
+          </select>
+        </Field>
 
-      <Field label="Price (USD)" error={errors.price}>
+        <Field label="Category" error={errors.category}>
+          <input
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+            placeholder="e.g. Running"
+          />
+        </Field>
+      </div>
+
+      <Field label="Subcategory (optional)">
         <input
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          inputMode="decimal"
+          value={subcategory}
+          onChange={(e) => setSubcategory(e.target.value)}
           className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="128"
+          placeholder="e.g. Low-top"
         />
       </Field>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Price (USD)" error={errors.price}>
+          <input
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            inputMode="decimal"
+            className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+            placeholder="128"
+          />
+        </Field>
+
+        <Field label="Compare-at price (optional)">
+          <input
+            value={compareAt}
+            onChange={(e) => setCompareAt(e.target.value)}
+            inputMode="decimal"
+            className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+            placeholder="150"
+          />
+        </Field>
+      </div>
 
       <Field label="Sizes (comma-separated)" error={errors.sizes}>
         <input
@@ -107,6 +152,33 @@ export default function ProductForm({
           onChange={(e) => setSizesText(e.target.value)}
           className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
           placeholder="8, 9, 10, 10.5, 11, 12"
+        />
+      </Field>
+
+      <Field label="Colors (comma-separated hex codes, optional)">
+        <input
+          value={colorsText}
+          onChange={(e) => setColorsText(e.target.value)}
+          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+          placeholder="#0d0d0d, #ff5a1f"
+        />
+      </Field>
+
+      <Field label="Image URLs (comma-separated, optional)">
+        <input
+          value={imagesText}
+          onChange={(e) => setImagesText(e.target.value)}
+          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+          placeholder="https://…"
+        />
+      </Field>
+
+      <Field label="Stock" error={errors.stock}>
+        <input
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          inputMode="numeric"
+          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
         />
       </Field>
 
@@ -120,20 +192,33 @@ export default function ProductForm({
         />
       </Field>
 
-      <Field label="Tag (optional)">
-        <input
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="New drop"
-        />
-      </Field>
+      <div className="flex gap-6">
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={isNew}
+            onChange={(e) => setIsNew(e.target.checked)}
+            className="accent-fridge-orange"
+          />
+          Tag as &ldquo;New drop&rdquo;
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={active}
+            onChange={(e) => setActive(e.target.checked)}
+            className="accent-fridge-orange"
+          />
+          Active (visible on storefront)
+        </label>
+      </div>
 
       <button
         type="submit"
-        className="mt-2 bg-fridge-orange px-6 py-3 text-sm font-bold tracking-wide text-black hover:brightness-110"
+        disabled={submitting}
+        className="mt-2 bg-fridge-orange px-6 py-3 text-sm font-bold tracking-wide text-black hover:brightness-110 disabled:opacity-50"
       >
-        {submitLabel}
+        {submitting ? "SAVING…" : submitLabel}
       </button>
     </form>
   );

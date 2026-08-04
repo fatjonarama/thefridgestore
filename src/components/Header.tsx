@@ -5,9 +5,9 @@ import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 
 const NAV_LINKS: { label: string; href: string }[] = [
-  { label: "MEN", href: "/shop/men" },
-  { label: "WOMEN", href: "/shop/women" },
-  { label: "KIDS", href: "/shop/kids" },
+  { label: "MEN", href: "/shop?audience=men" },
+  { label: "WOMEN", href: "/shop?audience=women" },
+  { label: "KIDS", href: "/shop?audience=kids" },
 ];
 
 export default function Header({ onSearchClick }: { onSearchClick: () => void }) {

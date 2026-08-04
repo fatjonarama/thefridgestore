@@ -4,12 +4,14 @@ import Link from "next/link";
 import Placeholder from "@/components/Placeholder";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
-import type { Product } from "@/lib/products";
+import { formatCents } from "@/lib/format";
+import type { ProductRow } from "@/db/schema";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product }: { product: ProductRow }) {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
   const wishlisted = isWishlisted(product.slug);
+  const outOfStock = product.stock <= 0;
 
   return (
     <div className="group relative">
@@ -28,22 +30,37 @@ export default function ProductCard({ product }: { product: Product }) {
         >
           ♥
         </button>
-        <button
-          aria-label={`Quick add ${product.name} to cart`}
-          onClick={(e) => {
-            e.preventDefault();
-            addToCart(product, product.sizes[0]);
-          }}
-          className="flex h-8 w-8 items-center justify-center border border-white/20 bg-background/60 text-base text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
-        >
-          +
-        </button>
+        {!outOfStock && (
+          <button
+            aria-label={`Quick add ${product.name} to cart`}
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart(
+                {
+                  id: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  priceCents: product.priceCents,
+                },
+                product.sizes[0],
+              );
+            }}
+            className="flex h-8 w-8 items-center justify-center border border-white/20 bg-background/60 text-base text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+          >
+            +
+          </button>
+        )}
       </div>
       <Link href={`/product/${product.slug}`} className="block">
         <Placeholder className="relative aspect-square w-full">
-          {product.tag && (
+          {product.isNew && (
             <span className="absolute left-2 top-2 bg-fridge-orange px-2 py-1 text-[10px] font-bold tracking-wide text-black">
-              {product.tag.toUpperCase()}
+              NEW DROP
+            </span>
+          )}
+          {outOfStock && (
+            <span className="absolute bottom-2 left-2 bg-white/10 px-2 py-1 text-[10px] font-bold tracking-wide text-white/70">
+              SOLD OUT
             </span>
           )}
           <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-[10px] tracking-widest text-white/30">
@@ -53,7 +70,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <p className="mt-3 text-sm font-bold tracking-wide group-hover:text-fridge-orange">
           {product.name}
         </p>
-        <p className="text-sm text-fridge-orange">${product.price}</p>
+        <p className="text-sm text-fridge-orange">{formatCents(product.priceCents)}</p>
       </Link>
     </div>
   );

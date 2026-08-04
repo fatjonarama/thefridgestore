@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import Placeholder from "@/components/Placeholder";
+import { formatCents } from "@/lib/format";
 
 export default function CartDrawer() {
-  const { lines, isOpen, closeCart, removeLine, setQty, subtotal } = useCart();
+  const { lines, isOpen, closeCart, removeLine, setQty, subtotalCents } = useCart();
 
   if (!isOpen) return null;
 
@@ -68,7 +69,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       <span className="text-sm text-fridge-orange">
-                        ${line.price * line.qty}
+                        {formatCents(line.priceCents * line.qty)}
                       </span>
                     </div>
                   </div>
@@ -81,16 +82,16 @@ export default function CartDrawer() {
         <div className="border-t border-white/10 px-6 py-4">
           <div className="flex items-center justify-between text-sm">
             <span className="text-white/60">Subtotal</span>
-            <span className="font-bold">${subtotal}</span>
+            <span className="font-bold">{formatCents(subtotalCents)}</span>
           </div>
           <Link
-            href="/checkout"
+            href="/cart"
             onClick={closeCart}
             className={`mt-4 block w-full bg-fridge-orange py-3 text-center text-sm font-bold tracking-wide text-black hover:brightness-110 ${
               lines.length === 0 ? "pointer-events-none opacity-40" : ""
             }`}
           >
-            CHECKOUT
+            VIEW CART
           </Link>
         </div>
       </div>

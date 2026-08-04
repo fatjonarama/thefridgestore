@@ -1,14 +1,13 @@
-"use client";
-
 import Link from "next/link";
 import Placeholder from "@/components/Placeholder";
 import ProductCard from "@/components/ProductCard";
-import { useProducts } from "@/context/ProductsContext";
-import { CATEGORIES, CATEGORY_LABELS } from "@/lib/products";
+import { getFreshDrops } from "@/db/queries";
+import { AUDIENCES, AUDIENCE_LABELS } from "@/lib/audience";
 
-export default function Home() {
-  const { products } = useProducts();
-  const freshDrops = products.filter((p) => p.tag === "New drop").slice(0, 3);
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const freshDrops = await getFreshDrops(3);
 
   return (
     <main className="flex-1">
@@ -26,7 +25,7 @@ export default function Home() {
             Friday — get in before they&apos;re gone.
           </p>
           <Link
-            href="/shop/men"
+            href="/shop"
             className="mt-8 inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black hover:brightness-110"
           >
             SHOP THE DROP
@@ -42,11 +41,15 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-6 py-12">
         <h2 className="font-display text-2xl tracking-wide">SHOP BY</h2>
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {CATEGORIES.map((cat) => (
-            <Link key={cat} href={`/shop/${cat}`} className="group block">
+          {AUDIENCES.map((audience) => (
+            <Link
+              key={audience}
+              href={`/shop?audience=${audience}`}
+              className="group block"
+            >
               <Placeholder className="aspect-[4/3] w-full" />
               <p className="mt-3 text-sm font-bold tracking-wide group-hover:text-fridge-orange">
-                {CATEGORY_LABELS[cat].toUpperCase()}
+                {AUDIENCE_LABELS[audience].toUpperCase()}
               </p>
             </Link>
           ))}

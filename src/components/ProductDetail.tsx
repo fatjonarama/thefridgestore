@@ -4,21 +4,24 @@ import { useState } from "react";
 import Placeholder from "@/components/Placeholder";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
-import type { Product } from "@/lib/products";
+import { formatCents } from "@/lib/format";
+import type { ProductRow } from "@/db/schema";
 
-export default function ProductDetail({ product }: { product: Product }) {
+export default function ProductDetail({ product }: { product: ProductRow }) {
   const [size, setSize] = useState<string | null>(null);
+  const [color, setColor] = useState<string | null>(product.colors[0] ?? null);
   const [error, setError] = useState(false);
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.slug);
+  const outOfStock = product.stock <= 0;
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
       <Placeholder className="relative aspect-square w-full">
-        {product.tag && (
+        {product.isNew && (
           <span className="absolute left-3 top-3 bg-fridge-orange px-2 py-1 text-[10px] font-bold tracking-wide text-black">
-            {product.tag.toUpperCase()}
+            NEW DROP
           </span>
         )}
         <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs tracking-widest text-white/30">
@@ -28,8 +31,36 @@ export default function ProductDetail({ product }: { product: Product }) {
 
       <div>
         <h1 className="font-display text-4xl tracking-wide">{product.name}</h1>
-        <p className="mt-2 text-xl text-fridge-orange">${product.price}</p>
+        <div className="mt-2 flex items-baseline gap-3">
+          <p className="text-xl text-fridge-orange">{formatCents(product.priceCents)}</p>
+          {product.compareAtCents && product.compareAtCents > product.priceCents && (
+            <p className="text-sm text-white/40 line-through">
+              {formatCents(product.compareAtCents)}
+            </p>
+          )}
+        </div>
         <p className="mt-6 max-w-md text-sm text-white/60">{product.description}</p>
+
+        {product.colors.length > 0 && (
+          <div className="mt-8">
+            <p className="text-sm font-bold tracking-wide">
+              COLOR{color ? ` — ${color}` : ""}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {product.colors.map((c) => (
+                <button
+                  key={c}
+                  aria-label={c}
+                  onClick={() => setColor(c)}
+                  style={{ backgroundColor: c }}
+                  className={`h-8 w-8 rounded-full border-2 ${
+                    color === c ? "border-fridge-orange" : "border-white/20"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="mt-8">
           <div className="flex items-center justify-between">
@@ -60,16 +91,25 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         <div className="mt-8 flex gap-3">
           <button
+            disabled={outOfStock}
             onClick={() => {
               if (!size) {
                 setError(true);
                 return;
               }
-              addToCart(product, size);
+              addToCart(
+                {
+                  id: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  priceCents: product.priceCents,
+                },
+                size,
+              );
             }}
-            className="flex-1 bg-fridge-orange py-4 text-sm font-bold tracking-wide text-black hover:brightness-110"
+            className="flex-1 bg-fridge-orange py-4 text-sm font-bold tracking-wide text-black hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            ADD TO CART
+            {outOfStock ? "SOLD OUT" : "ADD TO CART"}
           </button>
           <button
             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}

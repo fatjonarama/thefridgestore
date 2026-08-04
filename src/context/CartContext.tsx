@@ -8,13 +8,20 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import type { Product } from "@/lib/products";
 import { createLocalStore } from "@/lib/localStore";
 
-export type CartLine = {
+export type CartProduct = {
+  id: number;
   slug: string;
   name: string;
-  price: number;
+  priceCents: number;
+};
+
+export type CartLine = {
+  productId: number;
+  slug: string;
+  name: string;
+  priceCents: number;
   size: string;
   qty: number;
 };
@@ -24,11 +31,12 @@ type CartContextValue = {
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addToCart: (product: Product, size: string, qty?: number) => void;
+  addToCart: (product: CartProduct, size: string, qty?: number) => void;
   removeLine: (slug: string, size: string) => void;
   setQty: (slug: string, size: string, qty: number) => void;
+  clearCart: () => void;
   count: number;
-  subtotal: number;
+  subtotalCents: number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -42,7 +50,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
   const [isOpen, setIsOpen] = useState(false);
 
-  const addToCart = useCallback((product: Product, size: string, qty = 1) => {
+  const addToCart = useCallback((product: CartProduct, size: string, qty = 1) => {
     cartStore.setValue((prev) => {
       const existing = prev.find(
         (l) => l.slug === product.slug && l.size === size,
@@ -56,7 +64,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [
         ...prev,
-        { slug: product.slug, name: product.name, price: product.price, size, qty },
+        {
+          productId: product.id,
+          slug: product.slug,
+          name: product.name,
+          priceCents: product.priceCents,
+          size,
+          qty,
+        },
       ];
     });
     setIsOpen(true);
@@ -78,9 +93,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const clearCart = useCallback(() => {
+    cartStore.setValue([]);
+  }, []);
+
   const count = useMemo(() => lines.reduce((sum, l) => sum + l.qty, 0), [lines]);
-  const subtotal = useMemo(
-    () => lines.reduce((sum, l) => sum + l.qty * l.price, 0),
+  const subtotalCents = useMemo(
+    () => lines.reduce((sum, l) => sum + l.qty * l.priceCents, 0),
     [lines],
   );
 
@@ -93,10 +112,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       addToCart,
       removeLine,
       setQty,
+      clearCart,
       count,
-      subtotal,
+      subtotalCents,
     }),
-    [lines, isOpen, addToCart, removeLine, setQty, count, subtotal],
+    [lines, isOpen, addToCart, removeLine, setQty, clearCart, count, subtotalCents],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
