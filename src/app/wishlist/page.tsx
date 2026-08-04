@@ -3,11 +3,12 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import { useWishlist } from "@/context/WishlistContext";
-import { PRODUCTS } from "@/lib/products";
+import { useProducts } from "@/context/ProductsContext";
 
 export default function WishlistPage() {
   const { slugs } = useWishlist();
-  const products = PRODUCTS.filter((p) => slugs.includes(p.slug));
+  const { products: allProducts } = useProducts();
+  const products = allProducts.filter((p) => slugs.includes(p.slug));
 
   return (
     <main className="mx-auto w-full max-w-7xl px-6 py-12">

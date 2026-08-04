@@ -15,13 +15,15 @@ export default function Header({ onSearchClick }: { onSearchClick: () => void })
   const { slugs } = useWishlist();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-black/95 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center bg-fridge-orange text-sm font-display text-black">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-fridge-orange text-sm font-display text-black">
             F
           </span>
-          <span className="font-display text-xl tracking-wide">THE FRIDGE</span>
+          <span className="whitespace-nowrap font-display text-base tracking-wide sm:text-xl">
+            THE FR<span className="text-fridge-orange">❄</span>DGE
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm font-semibold tracking-wide md:flex">

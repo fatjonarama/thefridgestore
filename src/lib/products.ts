@@ -16,7 +16,9 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   kids: "Kids",
 };
 
-export const PRODUCTS: Product[] = [
+export const CATEGORIES: Category[] = ["men", "women", "kids"];
+
+export const SEED_PRODUCTS: Product[] = [
   {
     slug: "blackout-04",
     name: "Blackout 04",
@@ -103,10 +105,29 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
-export function getProductsByCategory(category: Category) {
-  return PRODUCTS.filter((p) => p.category === category);
+export function getProductsByCategory(products: Product[], category: Category) {
+  return products.filter((p) => p.category === category);
 }
 
-export function getProductBySlug(slug: string) {
-  return PRODUCTS.find((p) => p.slug === slug);
+export function getProductBySlug(products: Product[], slug: string) {
+  return products.find((p) => p.slug === slug);
+}
+
+export function slugify(name: string) {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export function uniqueSlug(products: Product[], name: string, ignoreSlug?: string) {
+  const base = slugify(name) || "product";
+  let candidate = base;
+  let n = 2;
+  while (products.some((p) => p.slug === candidate && p.slug !== ignoreSlug)) {
+    candidate = `${base}-${n}`;
+    n += 1;
+  }
+  return candidate;
 }

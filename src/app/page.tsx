@@ -1,12 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import Placeholder from "@/components/Placeholder";
 import ProductCard from "@/components/ProductCard";
-import { CATEGORY_LABELS, PRODUCTS, type Category } from "@/lib/products";
-
-const CATEGORIES: Category[] = ["men", "women", "kids"];
-const FRESH_DROPS = PRODUCTS.filter((p) => p.tag === "New drop").slice(0, 3);
+import { useProducts } from "@/context/ProductsContext";
+import { CATEGORIES, CATEGORY_LABELS } from "@/lib/products";
 
 export default function Home() {
+  const { products } = useProducts();
+  const freshDrops = products.filter((p) => p.tag === "New drop").slice(0, 3);
+
   return (
     <main className="flex-1">
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-2 md:items-center">
@@ -52,11 +55,15 @@ export default function Home() {
 
       <section className="mx-auto max-w-7xl px-6 py-12">
         <h2 className="font-display text-2xl tracking-wide">FRESH DROPS</h2>
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {FRESH_DROPS.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
-        </div>
+        {freshDrops.length === 0 ? (
+          <p className="mt-6 text-sm text-white/40">No drops tagged yet.</p>
+        ) : (
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {freshDrops.map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
+          </div>
+        )}
       </section>
     </main>
   );

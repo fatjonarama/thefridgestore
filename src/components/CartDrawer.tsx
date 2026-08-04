@@ -16,7 +16,7 @@ export default function CartDrawer() {
         onClick={closeCart}
         className="absolute inset-0 bg-black/70"
       />
-      <div className="relative flex h-full w-full max-w-md flex-col border-l border-white/10 bg-black">
+      <div className="relative flex h-full w-full max-w-md flex-col border-l border-white/10 bg-background">
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <h2 className="font-display text-xl tracking-wide">YOUR CART</h2>
           <button
