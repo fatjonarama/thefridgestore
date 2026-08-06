@@ -37,6 +37,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# generated SQL (regenerate with scripts/generate-seed-sql.ts)
+/seed-output.sql
+/setup.sql
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
