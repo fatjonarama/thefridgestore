@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import FridgeGlyph from "@/components/FridgeGlyph";
 import { loginAdmin } from "./actions";
 
 function LoginForm() {
@@ -27,8 +28,8 @@ function LoginForm() {
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-6 py-16">
-      <span className="mx-auto flex h-10 w-10 items-center justify-center bg-fridge-orange text-lg font-display text-black">
-        F
+      <span className="mx-auto block h-11 w-6 text-fridge-orange">
+        <FridgeGlyph />
       </span>
       <h1 className="mt-6 text-center font-display text-3xl tracking-wide">
         ADMIN ACCESS

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import FridgeGlyph from "@/components/FridgeGlyph";
 
 const NAV_LINKS: { label: string; href: string }[] = [
   { label: "MEN", href: "/shop?audience=men" },
@@ -17,12 +18,13 @@ export default function Header({ onSearchClick }: { onSearchClick: () => void })
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-fridge-orange text-sm font-display text-black">
-            F
-          </span>
+        <Link href="/" className="flex shrink-0 items-center">
           <span className="whitespace-nowrap font-display text-base tracking-wide sm:text-xl">
-            THE FR<span className="text-fridge-orange">❄</span>DGE
+            THE FR
+            <span className="relative -mx-0.5 inline-block h-[1.2em] w-[0.62em] -translate-y-[0.08em] align-middle text-fridge-orange">
+              <FridgeGlyph />
+            </span>
+            DGE
           </span>
         </Link>
 
