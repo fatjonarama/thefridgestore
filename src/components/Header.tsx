@@ -19,9 +19,9 @@ export default function Header({ onSearchClick }: { onSearchClick: () => void })
     <header className="sticky top-0 z-30 border-b border-white/10 bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
         <Link href="/" className="flex shrink-0 items-center">
-          <span className="whitespace-nowrap font-display text-base tracking-wide sm:text-xl">
+          <span className="whitespace-nowrap font-display text-lg tracking-wide sm:text-2xl">
             THE FR
-            <span className="relative -mx-0.5 inline-block h-[1.2em] w-[0.62em] -translate-y-[0.08em] align-middle text-fridge-orange">
+            <span className="relative mx-[0.06em] inline-block h-[1.5em] w-[0.8em] -translate-y-[0.12em] align-middle text-fridge-orange">
               <FridgeGlyph />
             </span>
             DGE
