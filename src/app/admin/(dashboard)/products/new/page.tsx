@@ -2,14 +2,25 @@
 
 import { useRouter } from "next/navigation";
 import ProductForm from "@/components/ProductForm";
-import { createProduct, type ProductInput } from "@/db/mutations";
+import { useToast } from "@/context/ToastContext";
+import { adminFetch } from "@/lib/adminFetch";
+import type { ProductInput } from "@/db/adminMutations";
 
 export default function NewProductPage() {
   const router = useRouter();
+  const toast = useToast();
 
   async function handleSubmit(values: ProductInput) {
-    await createProduct(values);
-    router.push("/admin/products");
+    try {
+      await adminFetch("/api/admin/products", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+      toast.success(`"${values.name}" created.`);
+      router.push("/admin/products");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create product.");
+    }
   }
 
   return (

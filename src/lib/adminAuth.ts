@@ -14,4 +14,17 @@ export async function expectedAdminCookieValue() {
   return sha256(password);
 }
 
+/**
+ * Defense-in-depth check for Route Handlers: middleware already gates
+ * /admin/:path*, but API routes re-verify independently rather than relying
+ * solely on middleware having run.
+ */
+export async function isAdminRequestAuthorized() {
+  const { cookies } = await import("next/headers");
+  const expected = await expectedAdminCookieValue();
+  if (!expected) return false;
+  const cookieStore = await cookies();
+  return cookieStore.get(COOKIE_NAME)?.value === expected;
+}
+
 export { COOKIE_NAME as ADMIN_COOKIE_NAME };

@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { AUDIENCES, AUDIENCE_LABELS, type Audience } from "@/lib/audience";
 import { eurosToCents } from "@/lib/format";
-import type { ProductInput } from "@/db/mutations";
+import { slugify } from "@/lib/slugify";
+import ChipListInput from "@/components/ChipListInput";
+import type { ProductInput } from "@/db/adminMutations";
 import type { ProductRow } from "@/db/schema";
 
 export default function ProductForm({
@@ -16,14 +18,18 @@ export default function ProductForm({
   onSubmit: (values: ProductInput) => void | Promise<void>;
 }) {
   const [name, setName] = useState(initial?.name ?? "");
+  const [slug, setSlug] = useState(initial?.slug ?? "");
+  const [slugTouched, setSlugTouched] = useState(Boolean(initial));
+  const [category, setCategory] = useState(initial?.category ?? "");
+  const [subcategory, setSubcategory] = useState(initial?.subcategory ?? "");
   const [audience, setAudience] = useState<Audience>(initial?.audience ?? "men");
   const [price, setPrice] = useState(initial ? String(initial.priceCents / 100) : "");
   const [compareAt, setCompareAt] = useState(
     initial?.compareAtCents ? String(initial.compareAtCents / 100) : "",
   );
-  const [sizesText, setSizesText] = useState(initial?.sizes.join(", ") ?? "");
-  const [colorsText, setColorsText] = useState(initial?.colors.join(", ") ?? "");
-  const [imagesText, setImagesText] = useState(initial?.images.join(", ") ?? "");
+  const [images, setImages] = useState<string[]>(initial?.images ?? []);
+  const [colors, setColors] = useState<string[]>(initial?.colors ?? []);
+  const [sizes, setSizes] = useState<string[]>(initial?.sizes ?? []);
   const [stock, setStock] = useState(initial ? String(initial.stock) : "0");
   const [isNew, setIsNew] = useState(initial?.isNew ?? true);
   const [active, setActive] = useState(initial?.active ?? true);
@@ -31,17 +37,20 @@ export default function ProductForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
+  function handleNameChange(value: string) {
+    setName(value);
+    if (!slugTouched) setSlug(slugify(value));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const priceCents = eurosToCents(price);
-    const sizes = sizesText.split(",").map((s) => s.trim()).filter(Boolean);
-    const colors = colorsText.split(",").map((s) => s.trim()).filter(Boolean);
-    const images = imagesText.split(",").map((s) => s.trim()).filter(Boolean);
     const stockNum = Number(stock);
 
     const nextErrors: Record<string, string> = {};
     if (!name.trim()) nextErrors.name = "Name is required.";
+    if (!slug.trim()) nextErrors.slug = "Slug is required.";
     if (!Number.isFinite(priceCents) || priceCents <= 0)
       nextErrors.price = "Enter a price greater than 0.";
     if (sizes.length === 0) nextErrors.sizes = "Add at least one size.";
@@ -57,10 +66,11 @@ export default function ProductForm({
     setSubmitting(true);
     try {
       await onSubmit({
+        slug: slugify(slug),
         name: name.trim(),
+        category: category.trim(),
+        subcategory: subcategory.trim() || undefined,
         audience,
-        category: "",
-        subcategory: undefined,
         priceCents,
         compareAtCents: compareAt ? eurosToCents(compareAt) : null,
         description: description.trim(),
@@ -81,24 +91,57 @@ export default function ProductForm({
       <Field label="Name" error={errors.name}>
         <input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => handleNameChange(e.target.value)}
           className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
           placeholder="e.g. Blackout 04"
         />
       </Field>
 
-      <Field label="Audience">
-        <select
-          value={audience}
-          onChange={(e) => setAudience(e.target.value as Audience)}
-          className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-        >
-          {AUDIENCES.map((a) => (
-            <option key={a} value={a}>
-              {AUDIENCE_LABELS[a]}
-            </option>
-          ))}
-        </select>
+      <Field label="Slug" error={errors.slug}>
+        <input
+          value={slug}
+          onChange={(e) => {
+            setSlug(e.target.value);
+            setSlugTouched(true);
+          }}
+          className="border border-white/15 bg-transparent px-3 py-3 font-mono text-sm outline-none focus:border-fridge-orange"
+          placeholder="blackout-04"
+        />
+        <span className="text-xs text-white/40">/product/{slug || "…"}</span>
+      </Field>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Audience">
+          <select
+            value={audience}
+            onChange={(e) => setAudience(e.target.value as Audience)}
+            className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+          >
+            {AUDIENCES.map((a) => (
+              <option key={a} value={a}>
+                {AUDIENCE_LABELS[a]}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        <Field label="Category">
+          <input
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+            placeholder="e.g. Running"
+          />
+        </Field>
+      </div>
+
+      <Field label="Subcategory (optional)">
+        <input
+          value={subcategory}
+          onChange={(e) => setSubcategory(e.target.value)}
+          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+          placeholder="e.g. Low-top"
+        />
       </Field>
 
       <div className="grid grid-cols-2 gap-4">
@@ -123,32 +166,28 @@ export default function ProductForm({
         </Field>
       </div>
 
-      <Field label="Sizes — EU (comma-separated)" error={errors.sizes}>
-        <input
-          value={sizesText}
-          onChange={(e) => setSizesText(e.target.value)}
-          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="40, 41, 42, 43, 44, 45, 46"
-        />
-      </Field>
+      <ChipListInput
+        label="Sizes (EU)"
+        values={sizes}
+        onChange={setSizes}
+        placeholder="e.g. 42"
+        error={errors.sizes}
+      />
 
-      <Field label="Colors (comma-separated hex codes, optional)">
-        <input
-          value={colorsText}
-          onChange={(e) => setColorsText(e.target.value)}
-          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="#0d0d0d, #ff5a1f"
-        />
-      </Field>
+      <ChipListInput
+        label="Colors (hex codes, optional)"
+        values={colors}
+        onChange={setColors}
+        placeholder="#ff5a1f"
+        swatchPreview
+      />
 
-      <Field label="Image URLs (comma-separated, optional)">
-        <input
-          value={imagesText}
-          onChange={(e) => setImagesText(e.target.value)}
-          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="https://…"
-        />
-      </Field>
+      <ChipListInput
+        label="Image URLs (optional)"
+        values={images}
+        onChange={setImages}
+        placeholder="https://…"
+      />
 
       <Field label="Stock" error={errors.stock}>
         <input
@@ -193,7 +232,7 @@ export default function ProductForm({
       <button
         type="submit"
         disabled={submitting}
-        className="mt-2 bg-fridge-orange px-6 py-3 text-sm font-bold tracking-wide text-black hover:brightness-110 disabled:opacity-50"
+        className="mt-2 bg-fridge-orange px-6 py-3 text-sm font-bold tracking-wide text-black hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {submitting ? "SAVING…" : submitLabel}
       </button>

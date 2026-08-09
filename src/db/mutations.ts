@@ -3,82 +3,8 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { orderItems, orders, products } from "@/db/schema";
-import { slugify } from "@/lib/slugify";
+import { orderItems, orders } from "@/db/schema";
 import { SHIPPING_CENTS, type Country } from "@/lib/shipping";
-
-export type ProductInput = {
-  name: string;
-  category: string;
-  subcategory?: string;
-  audience: "men" | "women" | "kids";
-  priceCents: number;
-  compareAtCents?: number | null;
-  description: string;
-  images: string[];
-  colors: string[];
-  sizes: string[];
-  stock: number;
-  isNew: boolean;
-  active: boolean;
-};
-
-async function uniqueSlug(name: string, ignoreId?: number) {
-  const base = slugify(name) || "product";
-  let candidate = base;
-  let n = 2;
-  for (;;) {
-    const existing = await db
-      .select({ id: products.id })
-      .from(products)
-      .where(eq(products.slug, candidate))
-      .limit(1);
-    if (existing.length === 0 || existing[0].id === ignoreId) return candidate;
-    candidate = `${base}-${n}`;
-    n += 1;
-  }
-}
-
-export async function createProduct(input: ProductInput) {
-  const slug = await uniqueSlug(input.name);
-  const [row] = await db
-    .insert(products)
-    .values({ ...input, slug })
-    .returning();
-  revalidatePath("/");
-  revalidatePath("/shop");
-  revalidatePath("/admin/products");
-  return row;
-}
-
-export async function updateProduct(id: number, input: ProductInput) {
-  const slug = await uniqueSlug(input.name, id);
-  const [row] = await db
-    .update(products)
-    .set({ ...input, slug })
-    .where(eq(products.id, id))
-    .returning();
-  revalidatePath("/");
-  revalidatePath("/shop");
-  revalidatePath(`/product/${slug}`);
-  revalidatePath("/admin/products");
-  return row;
-}
-
-export async function deleteProduct(id: number) {
-  await db.delete(products).where(eq(products.id, id));
-  revalidatePath("/");
-  revalidatePath("/shop");
-  revalidatePath("/admin/products");
-}
-
-export async function adjustStock(id: number, stock: number) {
-  await db
-    .update(products)
-    .set({ stock: Math.max(0, stock) })
-    .where(eq(products.id, id));
-  revalidatePath("/admin/products");
-}
 
 export type OrderItemInput = {
   productId: number | null;
