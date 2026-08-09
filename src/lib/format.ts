@@ -1,11 +1,9 @@
 export function formatCents(cents: number) {
-  const dollars = cents / 100;
-  return dollars % 1 === 0
-    ? `$${dollars.toFixed(0)}`
-    : `$${dollars.toFixed(2)}`;
+  const euros = cents / 100;
+  return euros % 1 === 0 ? `€${euros.toFixed(0)}` : `€${euros.toFixed(2)}`;
 }
 
-export function dollarsToCents(value: string | number) {
-  const dollars = typeof value === "string" ? Number(value) : value;
-  return Math.round(dollars * 100);
+export function eurosToCents(value: string | number) {
+  const euros = typeof value === "string" ? Number(value) : value;
+  return Math.round(euros * 100);
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AUDIENCES, AUDIENCE_LABELS, type Audience } from "@/lib/audience";
-import { dollarsToCents } from "@/lib/format";
+import { eurosToCents } from "@/lib/format";
 import type { ProductInput } from "@/db/mutations";
 import type { ProductRow } from "@/db/schema";
 
@@ -17,8 +17,6 @@ export default function ProductForm({
 }) {
   const [name, setName] = useState(initial?.name ?? "");
   const [audience, setAudience] = useState<Audience>(initial?.audience ?? "men");
-  const [category, setCategory] = useState(initial?.category ?? "");
-  const [subcategory, setSubcategory] = useState(initial?.subcategory ?? "");
   const [price, setPrice] = useState(initial ? String(initial.priceCents / 100) : "");
   const [compareAt, setCompareAt] = useState(
     initial?.compareAtCents ? String(initial.compareAtCents / 100) : "",
@@ -36,7 +34,7 @@ export default function ProductForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const priceCents = dollarsToCents(price);
+    const priceCents = eurosToCents(price);
     const sizes = sizesText.split(",").map((s) => s.trim()).filter(Boolean);
     const colors = colorsText.split(",").map((s) => s.trim()).filter(Boolean);
     const images = imagesText.split(",").map((s) => s.trim()).filter(Boolean);
@@ -44,7 +42,6 @@ export default function ProductForm({
 
     const nextErrors: Record<string, string> = {};
     if (!name.trim()) nextErrors.name = "Name is required.";
-    if (!category.trim()) nextErrors.category = "Category is required.";
     if (!Number.isFinite(priceCents) || priceCents <= 0)
       nextErrors.price = "Enter a price greater than 0.";
     if (sizes.length === 0) nextErrors.sizes = "Add at least one size.";
@@ -62,10 +59,10 @@ export default function ProductForm({
       await onSubmit({
         name: name.trim(),
         audience,
-        category: category.trim(),
-        subcategory: subcategory.trim() || undefined,
+        category: "",
+        subcategory: undefined,
         priceCents,
-        compareAtCents: compareAt ? dollarsToCents(compareAt) : null,
+        compareAtCents: compareAt ? eurosToCents(compareAt) : null,
         description: description.trim(),
         images,
         colors,
@@ -90,42 +87,22 @@ export default function ProductForm({
         />
       </Field>
 
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Audience">
-          <select
-            value={audience}
-            onChange={(e) => setAudience(e.target.value as Audience)}
-            className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          >
-            {AUDIENCES.map((a) => (
-              <option key={a} value={a}>
-                {AUDIENCE_LABELS[a]}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <Field label="Category" error={errors.category}>
-          <input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-            placeholder="e.g. Running"
-          />
-        </Field>
-      </div>
-
-      <Field label="Subcategory (optional)">
-        <input
-          value={subcategory}
-          onChange={(e) => setSubcategory(e.target.value)}
-          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="e.g. Low-top"
-        />
+      <Field label="Audience">
+        <select
+          value={audience}
+          onChange={(e) => setAudience(e.target.value as Audience)}
+          className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+        >
+          {AUDIENCES.map((a) => (
+            <option key={a} value={a}>
+              {AUDIENCE_LABELS[a]}
+            </option>
+          ))}
+        </select>
       </Field>
 
       <div className="grid grid-cols-2 gap-4">
-        <Field label="Price (USD)" error={errors.price}>
+        <Field label="Price (EUR)" error={errors.price}>
           <input
             value={price}
             onChange={(e) => setPrice(e.target.value)}
@@ -146,12 +123,12 @@ export default function ProductForm({
         </Field>
       </div>
 
-      <Field label="Sizes (comma-separated)" error={errors.sizes}>
+      <Field label="Sizes — EU (comma-separated)" error={errors.sizes}>
         <input
           value={sizesText}
           onChange={(e) => setSizesText(e.target.value)}
           className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="8, 9, 10, 10.5, 11, 12"
+          placeholder="40, 41, 42, 43, 44, 45, 46"
         />
       </Field>
 

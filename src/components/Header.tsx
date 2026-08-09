@@ -8,7 +8,6 @@ import FridgeGlyph from "@/components/FridgeGlyph";
 const NAV_LINKS: { label: string; href: string }[] = [
   { label: "MEN", href: "/shop?audience=men" },
   { label: "WOMEN", href: "/shop?audience=women" },
-  { label: "KIDS", href: "/shop?audience=kids" },
 ];
 
 export default function Header({ onSearchClick }: { onSearchClick: () => void }) {
@@ -30,7 +29,11 @@ export default function Header({ onSearchClick }: { onSearchClick: () => void })
 
         <nav className="hidden items-center gap-8 text-sm font-semibold tracking-wide md:flex">
           {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-fridge-orange">
+            <Link
+              key={link.href}
+              href={link.href}
+              className="relative py-1 after:absolute after:inset-x-0 after:-bottom-1 after:h-[2px] after:origin-left after:scale-x-0 after:bg-fridge-orange after:transition-transform after:duration-300 after:content-[''] hover:text-fridge-orange hover:after:scale-x-100"
+            >
               {link.label}
             </Link>
           ))}
@@ -40,14 +43,14 @@ export default function Header({ onSearchClick }: { onSearchClick: () => void })
           <button
             aria-label="Search"
             onClick={onSearchClick}
-            className="flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+            className="flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
           >
             <SearchIcon />
           </button>
           <Link
             href="/wishlist"
             aria-label="Wishlist"
-            className="relative flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+            className="relative flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
           >
             <HeartIcon />
             {slugs.length > 0 && (
@@ -59,13 +62,13 @@ export default function Header({ onSearchClick }: { onSearchClick: () => void })
           <Link
             href="/account"
             aria-label="Account"
-            className="hidden h-9 w-9 items-center justify-center border border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange sm:flex"
+            className="hidden h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
           >
             <UserIcon />
           </Link>
           <button
             onClick={openCart}
-            className="bg-fridge-orange px-4 py-2 text-sm font-bold tracking-wide text-black hover:brightness-110"
+            className="bg-fridge-orange px-4 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95"
           >
             CART ({count})
           </button>

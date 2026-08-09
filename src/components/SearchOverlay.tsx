@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatCents } from "@/lib/format";
 import { AUDIENCE_LABELS } from "@/lib/audience";
+import { usePresence } from "@/lib/usePresence";
 import type { ProductRow } from "@/db/schema";
 
 export default function SearchOverlay({
@@ -16,6 +17,7 @@ export default function SearchOverlay({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ProductRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const { shouldRender, visible } = usePresence(open, 200);
 
   useEffect(() => {
     const q = query.trim();
@@ -44,16 +46,22 @@ export default function SearchOverlay({
     };
   }, [query]);
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
     <div className="fixed inset-0 z-50">
       <button
         aria-label="Close search"
         onClick={onClose}
-        className="absolute inset-0 bg-black/70"
+        className={`absolute inset-0 bg-black/70 transition-opacity duration-200 ${
+          visible ? "opacity-100" : "opacity-0"
+        }`}
       />
-      <div className="relative mx-auto mt-24 w-full max-w-2xl px-6">
+      <div
+        className={`relative mx-auto mt-24 w-full max-w-2xl px-6 transition-all duration-200 ease-out ${
+          visible ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
+        }`}
+      >
         <div className="border border-white/15 bg-background">
           <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
             <span className="text-white/40">

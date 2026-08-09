@@ -1,14 +1,12 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { parse } from "csv-parse/sync";
 import { slugify } from "../src/lib/slugify";
-import { dollarsToCents } from "../src/lib/format";
+import { eurosToCents } from "../src/lib/format";
 import { isAudience } from "../src/lib/audience";
 
 type CsvRow = {
   name: string;
   audience: string;
-  category: string;
-  subcategory?: string;
   price: string;
   compareAt?: string;
   description?: string;
@@ -48,7 +46,7 @@ const usedSlugs = new Set<string>();
 const values: string[] = [];
 
 for (const row of rows) {
-  if (!row.name || !row.audience || !row.category || !row.price || !row.sizes) continue;
+  if (!row.name || !row.audience || !row.price || !row.sizes) continue;
   if (!isAudience(row.audience.trim().toLowerCase())) continue;
 
   let slug = slugify(row.name);
@@ -59,8 +57,8 @@ for (const row of rows) {
   }
   usedSlugs.add(slug);
 
-  const priceCents = dollarsToCents(row.price);
-  const compareAtCents = row.compareAt ? dollarsToCents(row.compareAt) : null;
+  const priceCents = eurosToCents(row.price);
+  const compareAtCents = row.compareAt ? eurosToCents(row.compareAt) : null;
   const description = row.description?.trim() ?? "";
   const images = splitList(row.images);
   const colors = splitList(row.colors);
@@ -70,8 +68,7 @@ for (const row of rows) {
   const active = parseBool(row.active, true);
 
   values.push(
-    `(${sqlString(slug)}, ${sqlString(row.name.trim())}, ${sqlString(row.category.trim())}, ` +
-      `${row.subcategory?.trim() ? sqlString(row.subcategory.trim()) : "NULL"}, ` +
+    `(${sqlString(slug)}, ${sqlString(row.name.trim())}, ${sqlString("")}, NULL, ` +
       `${sqlString(row.audience.trim().toLowerCase())}, ${priceCents}, ` +
       `${compareAtCents ?? "NULL"}, ${sqlString(description)}, ${sqlArray(images)}, ` +
       `${sqlArray(colors)}, ${sqlArray(sizes)}, ${stock}, ${isNew}, ${active})`,

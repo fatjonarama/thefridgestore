@@ -25,7 +25,9 @@ export default async function AdminOrdersPage() {
                   <p className="font-bold tracking-wide">{order.customerName}</p>
                   <p className="mt-1 text-sm text-white/60">{order.phone}</p>
                   {order.email && <p className="text-sm text-white/60">{order.email}</p>}
-                  <p className="mt-2 max-w-md text-sm text-white/50">{order.address}</p>
+                  <p className="mt-2 max-w-md text-sm text-white/50">
+                    {order.address}, {order.country}
+                  </p>
                   {order.notes && (
                     <p className="mt-2 max-w-md text-xs text-white/40">
                       Notes: {order.notes}
@@ -35,6 +37,9 @@ export default async function AdminOrdersPage() {
                 <div className="flex flex-col items-end gap-2">
                   <span className="font-display text-xl text-fridge-orange">
                     {formatCents(order.totalCents)}
+                  </span>
+                  <span className="text-xs text-white/40">
+                    incl. {formatCents(order.shippingCents)} shipping
                   </span>
                   <OrderStatusSelect orderId={order.id} status={order.status} />
                   <span className="text-xs text-white/30">

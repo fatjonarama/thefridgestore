@@ -1,20 +1,17 @@
-import { and, desc, eq, ilike, inArray, or } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, ne, or } from "drizzle-orm";
 import { db } from "@/db";
 import { orderItems, orders, products, type OrderItemRow, type OrderRow, type ProductRow } from "@/db/schema";
 
-export async function getActiveProducts(): Promise<ProductRow[]> {
-  return db.select().from(products).where(eq(products.active, true)).orderBy(
-    desc(products.createdAt),
-  );
-}
+// "kids" is retired from the storefront (still a valid DB/enum value for
+// backward compatibility) — every public-facing query excludes it so any
+// legacy row never surfaces to shoppers. Admin queries stay unfiltered.
+const notKids = ne(products.audience, "kids");
 
-export async function getActiveProductsByAudience(
-  audience: "men" | "women" | "kids",
-): Promise<ProductRow[]> {
+export async function getActiveProducts(): Promise<ProductRow[]> {
   return db
     .select()
     .from(products)
-    .where(and(eq(products.active, true), eq(products.audience, audience)))
+    .where(and(eq(products.active, true), notKids))
     .orderBy(desc(products.createdAt));
 }
 
@@ -22,7 +19,7 @@ export async function getProductBySlug(slug: string): Promise<ProductRow | undef
   const rows = await db
     .select()
     .from(products)
-    .where(and(eq(products.slug, slug), eq(products.active, true)))
+    .where(and(eq(products.slug, slug), eq(products.active, true), notKids))
     .limit(1);
   return rows[0];
 }
@@ -31,7 +28,7 @@ export async function getFreshDrops(limit = 3): Promise<ProductRow[]> {
   return db
     .select()
     .from(products)
-    .where(and(eq(products.active, true), eq(products.isNew, true)))
+    .where(and(eq(products.active, true), eq(products.isNew, true), notKids))
     .orderBy(desc(products.createdAt))
     .limit(limit);
 }
@@ -75,6 +72,7 @@ export async function searchProducts(query: string, limit = 8): Promise<ProductR
     .where(
       and(
         eq(products.active, true),
+        notKids,
         or(ilike(products.name, q), ilike(products.category, q)),
       ),
     )

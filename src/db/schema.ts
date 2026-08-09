@@ -15,6 +15,11 @@ export const orderStatusEnum = pgEnum("order_status", [
   "fulfilled",
   "cancelled",
 ]);
+export const countryEnum = pgEnum("country", [
+  "Kosovo",
+  "Albania",
+  "North Macedonia",
+]);
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -40,9 +45,11 @@ export const orders = pgTable("orders", {
   customerName: text("customer_name").notNull(),
   phone: text("phone").notNull(),
   email: text("email"),
+  country: countryEnum("country").notNull(),
   address: text("address").notNull(),
   notes: text("notes"),
   status: orderStatusEnum("status").notNull().default("pending"),
+  shippingCents: integer("shipping_cents").notNull().default(0),
   totalCents: integer("total_cents").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

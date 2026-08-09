@@ -19,7 +19,6 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
 
   const [audience, setAudience] = useState<Audience | "all">(urlAudience);
   const [syncedAudience, setSyncedAudience] = useState(urlAudience);
-  const [categories, setCategories] = useState<Set<string>>(new Set());
   const [sizes, setSizes] = useState<Set<string>>(new Set());
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -35,21 +34,21 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
     [products, audience],
   );
 
-  const availableCategories = useMemo(
-    () => Array.from(new Set(audienceProducts.map((p) => p.category))).sort(),
-    [audienceProducts],
-  );
-
   const availableSizes = useMemo(
-    () => Array.from(new Set(audienceProducts.flatMap((p) => p.sizes))).sort(),
+    () =>
+      Array.from(new Set(audienceProducts.flatMap((p) => p.sizes))).sort(
+        (a, b) => Number(a) - Number(b),
+      ),
     [audienceProducts],
   );
 
-  function toggle(set: Set<string>, value: string, setter: (s: Set<string>) => void) {
-    const next = new Set(set);
-    if (next.has(value)) next.delete(value);
-    else next.add(value);
-    setter(next);
+  function toggleSize(value: string) {
+    setSizes((prev) => {
+      const next = new Set(prev);
+      if (next.has(value)) next.delete(value);
+      else next.add(value);
+      return next;
+    });
   }
 
   const filtered = useMemo(() => {
@@ -57,7 +56,6 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
     const max = maxPrice ? Number(maxPrice) * 100 : null;
 
     let result = audienceProducts.filter((p) => {
-      if (categories.size > 0 && !categories.has(p.category)) return false;
       if (sizes.size > 0 && !p.sizes.some((s) => sizes.has(s))) return false;
       if (min !== null && p.priceCents < min) return false;
       if (max !== null && p.priceCents > max) return false;
@@ -71,7 +69,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
     });
 
     return result;
-  }, [audienceProducts, categories, sizes, minPrice, maxPrice, sort]);
+  }, [audienceProducts, sizes, minPrice, maxPrice, sort]);
 
   return (
     <main className="mx-auto w-full max-w-7xl px-6 py-12">
@@ -95,31 +93,13 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
             </div>
           </FilterGroup>
 
-          {availableCategories.length > 0 && (
-            <FilterGroup title="Category">
-              <div className="flex flex-col gap-2 text-sm">
-                {availableCategories.map((cat) => (
-                  <label key={cat} className="flex items-center gap-2 text-white/70">
-                    <input
-                      type="checkbox"
-                      checked={categories.has(cat)}
-                      onChange={() => toggle(categories, cat, setCategories)}
-                      className="accent-fridge-orange"
-                    />
-                    {cat}
-                  </label>
-                ))}
-              </div>
-            </FilterGroup>
-          )}
-
           {availableSizes.length > 0 && (
-            <FilterGroup title="Size">
+            <FilterGroup title="Size (EU)">
               <div className="flex flex-wrap gap-2">
                 {availableSizes.map((size) => (
                   <button
                     key={size}
-                    onClick={() => toggle(sizes, size, setSizes)}
+                    onClick={() => toggleSize(size)}
                     className={`border px-3 py-1.5 text-xs ${
                       sizes.has(size)
                         ? "border-fridge-orange bg-fridge-orange text-black"
@@ -133,7 +113,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
             </FilterGroup>
           )}
 
-          <FilterGroup title="Price (USD)">
+          <FilterGroup title="Price (EUR)">
             <div className="flex items-center gap-2">
               <input
                 value={minPrice}

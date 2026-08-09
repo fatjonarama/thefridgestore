@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Placeholder from "@/components/Placeholder";
 import { useCart } from "@/context/CartContext";
 import { formatCents } from "@/lib/format";
+import { COUNTRIES, SHIPPING_CENTS, type Country } from "@/lib/shipping";
 import { createOrder } from "@/db/mutations";
 
 export default function CartPage() {
@@ -15,11 +16,15 @@ export default function CartPage() {
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [country, setCountry] = useState<Country | "">("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const shippingCents = country ? SHIPPING_CENTS[country] : null;
+  const totalCents = subtotalCents + (shippingCents ?? 0);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,6 +33,7 @@ export default function CartPage() {
     const nextErrors: Record<string, string> = {};
     if (!customerName.trim()) nextErrors.customerName = "Name is required.";
     if (!phone.trim()) nextErrors.phone = "Phone number is required.";
+    if (!country) nextErrors.country = "Select a country.";
     if (!address.trim()) nextErrors.address = "Delivery address is required.";
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
@@ -40,6 +46,7 @@ export default function CartPage() {
         customerName: customerName.trim(),
         phone: phone.trim(),
         email: email.trim() || undefined,
+        country: country as Country,
         address: address.trim(),
         notes: notes.trim() || undefined,
         items: lines.map((line) => ({
@@ -122,11 +129,21 @@ export default function CartPage() {
 
         <div>
           <div className="border border-white/10 p-6">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-white/60">Subtotal</span>
-              <span className="font-bold">{formatCents(subtotalCents)}</span>
+            <div className="flex flex-col gap-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-white/60">Subtotal</span>
+                <span>{formatCents(subtotalCents)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-white/60">Shipping</span>
+                <span>{shippingCents === null ? "—" : formatCents(shippingCents)}</span>
+              </div>
+              <div className="flex items-center justify-between border-t border-white/10 pt-2 font-bold">
+                <span>Total</span>
+                <span>{formatCents(totalCents)}</span>
+              </div>
             </div>
-            <p className="mt-2 text-xs text-white/40">
+            <p className="mt-3 text-xs text-white/40">
               No payment now — we&apos;ll follow up to confirm and arrange payment.
             </p>
 
@@ -153,6 +170,22 @@ export default function CartPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="border border-white/15 bg-transparent px-3 py-2.5 text-sm outline-none focus:border-fridge-orange"
                 />
+              </Field>
+              <Field label="Country" error={errors.country}>
+                <select
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value as Country)}
+                  className="border border-white/15 bg-background px-3 py-2.5 text-sm outline-none focus:border-fridge-orange"
+                >
+                  <option value="" disabled>
+                    Select a country
+                  </option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c} — shipping {formatCents(SHIPPING_CENTS[c])}
+                    </option>
+                  ))}
+                </select>
               </Field>
               <Field label="Delivery address" error={errors.address}>
                 <textarea

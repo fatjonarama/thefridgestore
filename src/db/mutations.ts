@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { orderItems, orders, products } from "@/db/schema";
 import { slugify } from "@/lib/slugify";
+import { SHIPPING_CENTS, type Country } from "@/lib/shipping";
 
 export type ProductInput = {
   name: string;
@@ -45,7 +46,7 @@ export async function createProduct(input: ProductInput) {
     .values({ ...input, slug })
     .returning();
   revalidatePath("/");
-  revalidatePath("/shop/[category]", "page");
+  revalidatePath("/shop");
   revalidatePath("/admin/products");
   return row;
 }
@@ -58,7 +59,7 @@ export async function updateProduct(id: number, input: ProductInput) {
     .where(eq(products.id, id))
     .returning();
   revalidatePath("/");
-  revalidatePath("/shop/[category]", "page");
+  revalidatePath("/shop");
   revalidatePath(`/product/${slug}`);
   revalidatePath("/admin/products");
   return row;
@@ -67,7 +68,7 @@ export async function updateProduct(id: number, input: ProductInput) {
 export async function deleteProduct(id: number) {
   await db.delete(products).where(eq(products.id, id));
   revalidatePath("/");
-  revalidatePath("/shop/[category]", "page");
+  revalidatePath("/shop");
   revalidatePath("/admin/products");
 }
 
@@ -91,13 +92,16 @@ export type OrderInput = {
   customerName: string;
   phone: string;
   email?: string;
+  country: Country;
   address: string;
   notes?: string;
   items: OrderItemInput[];
 };
 
 export async function createOrder(input: OrderInput) {
-  const totalCents = input.items.reduce((sum, item) => sum + item.priceCents * item.qty, 0);
+  const subtotalCents = input.items.reduce((sum, item) => sum + item.priceCents * item.qty, 0);
+  const shippingCents = SHIPPING_CENTS[input.country];
+  const totalCents = subtotalCents + shippingCents;
 
   const [order] = await db
     .insert(orders)
@@ -105,8 +109,10 @@ export async function createOrder(input: OrderInput) {
       customerName: input.customerName,
       phone: input.phone,
       email: input.email || null,
+      country: input.country,
       address: input.address,
       notes: input.notes || null,
+      shippingCents,
       totalCents,
     })
     .returning();

@@ -30,7 +30,6 @@ export default async function AdminProductsPage() {
               <tr className="border-b border-white/10 text-xs uppercase tracking-wide text-white/40">
                 <th className="px-4 py-3 font-normal">Name</th>
                 <th className="px-4 py-3 font-normal">Audience</th>
-                <th className="px-4 py-3 font-normal">Category</th>
                 <th className="px-4 py-3 font-normal">Price</th>
                 <th className="px-4 py-3 font-normal">Stock</th>
                 <th className="px-4 py-3 font-normal">Status</th>
@@ -47,7 +46,6 @@ export default async function AdminProductsPage() {
                   <td className="px-4 py-3 text-white/70">
                     {AUDIENCE_LABELS[product.audience]}
                   </td>
-                  <td className="px-4 py-3 text-white/70">{product.category}</td>
                   <td className="px-4 py-3 text-fridge-orange">
                     {formatCents(product.priceCents)}
                   </td>

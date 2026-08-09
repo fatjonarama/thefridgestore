@@ -4,26 +4,34 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import Placeholder from "@/components/Placeholder";
 import { formatCents } from "@/lib/format";
+import { usePresence } from "@/lib/usePresence";
 
 export default function CartDrawer() {
   const { lines, isOpen, closeCart, removeLine, setQty, subtotalCents } = useCart();
+  const { shouldRender, visible } = usePresence(isOpen, 300);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <button
         aria-label="Close cart"
         onClick={closeCart}
-        className="absolute inset-0 bg-black/70"
+        className={`absolute inset-0 bg-black/70 transition-opacity duration-300 ${
+          visible ? "opacity-100" : "opacity-0"
+        }`}
       />
-      <div className="relative flex h-full w-full max-w-md flex-col border-l border-white/10 bg-background">
+      <div
+        className={`relative flex h-full w-full max-w-md flex-col border-l border-white/10 bg-background transition-transform duration-300 ease-out ${
+          visible ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <h2 className="font-display text-xl tracking-wide">YOUR CART</h2>
           <button
             aria-label="Close cart"
             onClick={closeCart}
-            className="text-white/60 hover:text-fridge-orange"
+            className="text-white/60 transition-colors hover:text-fridge-orange"
           >
             ✕
           </button>
@@ -44,7 +52,7 @@ export default function CartDrawer() {
                       <p className="text-sm font-bold tracking-wide">{line.name}</p>
                       <button
                         onClick={() => removeLine(line.slug, line.size)}
-                        className="text-xs text-white/40 hover:text-fridge-orange"
+                        className="text-xs text-white/40 transition-colors hover:text-fridge-orange"
                       >
                         Remove
                       </button>
@@ -53,7 +61,7 @@ export default function CartDrawer() {
                     <div className="mt-2 flex items-center justify-between">
                       <div className="flex items-center border border-white/15">
                         <button
-                          className="px-2 py-1 text-white/70 hover:text-fridge-orange"
+                          className="px-2 py-1 text-white/70 transition-colors hover:text-fridge-orange"
                           onClick={() => setQty(line.slug, line.size, line.qty - 1)}
                           aria-label="Decrease quantity"
                         >
@@ -61,7 +69,7 @@ export default function CartDrawer() {
                         </button>
                         <span className="w-6 text-center text-sm">{line.qty}</span>
                         <button
-                          className="px-2 py-1 text-white/70 hover:text-fridge-orange"
+                          className="px-2 py-1 text-white/70 transition-colors hover:text-fridge-orange"
                           onClick={() => setQty(line.slug, line.size, line.qty + 1)}
                           aria-label="Increase quantity"
                         >
@@ -87,7 +95,7 @@ export default function CartDrawer() {
           <Link
             href="/cart"
             onClick={closeCart}
-            className={`mt-4 block w-full bg-fridge-orange py-3 text-center text-sm font-bold tracking-wide text-black hover:brightness-110 ${
+            className={`mt-4 block w-full bg-fridge-orange py-3 text-center text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 ${
               lines.length === 0 ? "pointer-events-none opacity-40" : ""
             }`}
           >

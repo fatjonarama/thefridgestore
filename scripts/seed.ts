@@ -4,14 +4,12 @@ import { parse } from "csv-parse/sync";
 import { db } from "../src/db";
 import { products } from "../src/db/schema";
 import { slugify } from "../src/lib/slugify";
-import { dollarsToCents } from "../src/lib/format";
+import { eurosToCents } from "../src/lib/format";
 import { isAudience } from "../src/lib/audience";
 
 type CsvRow = {
   name: string;
   audience: string;
-  category: string;
-  subcategory?: string;
   price: string;
   compareAt?: string;
   description?: string;
@@ -64,12 +62,12 @@ async function main() {
   let updated = 0;
 
   for (const row of rows) {
-    if (!row.name || !row.audience || !row.category || !row.price || !row.sizes) {
+    if (!row.name || !row.audience || !row.price || !row.sizes) {
       console.warn(`Skipping row (missing required field): ${JSON.stringify(row)}`);
       continue;
     }
     if (!isAudience(row.audience.trim().toLowerCase())) {
-      console.warn(`Skipping "${row.name}": invalid audience "${row.audience}" (expected men/women/kids)`);
+      console.warn(`Skipping "${row.name}": invalid audience "${row.audience}" (expected men/women)`);
       continue;
     }
 
@@ -85,10 +83,10 @@ async function main() {
       slug,
       name: row.name.trim(),
       audience: row.audience.trim().toLowerCase() as "men" | "women" | "kids",
-      category: row.category.trim(),
-      subcategory: row.subcategory?.trim() || null,
-      priceCents: dollarsToCents(row.price),
-      compareAtCents: row.compareAt ? dollarsToCents(row.compareAt) : null,
+      category: "",
+      subcategory: null,
+      priceCents: eurosToCents(row.price),
+      compareAtCents: row.compareAt ? eurosToCents(row.compareAt) : null,
       description: row.description?.trim() ?? "",
       images: splitList(row.images),
       colors: splitList(row.colors),
