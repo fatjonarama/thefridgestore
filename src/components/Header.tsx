@@ -14,9 +14,11 @@ const NAV_LINKS: { label: string; href: string }[] = [
 
 export default function Header({
   onSearchClick,
+  onMenuClick,
   user,
 }: {
   onSearchClick: () => void;
+  onMenuClick: () => void;
   user: PublicUser | null;
 }) {
   const { count, openCart } = useCart();
@@ -47,7 +49,14 @@ export default function Header({
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            aria-label="Open menu"
+            onClick={onMenuClick}
+            className="flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange md:hidden"
+          >
+            <MenuIcon />
+          </button>
           <button
             aria-label="Search"
             onClick={onSearchClick}
@@ -93,13 +102,21 @@ export default function Header({
           )}
           <button
             onClick={openCart}
-            className="bg-fridge-orange px-4 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95"
+            className="bg-fridge-orange px-3 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:px-4"
           >
             CART ({count})
           </button>
         </div>
       </div>
     </header>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 6h18M3 12h18M3 18h18" />
+    </svg>
   );
 }
 
