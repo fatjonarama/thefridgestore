@@ -1,3 +1,4 @@
+import { BRANDS } from "@/lib/brands";
 import type { ProductInput } from "@/db/adminMutations";
 
 export function validateProductInput(
@@ -25,6 +26,7 @@ export function validateProductInput(
     input: {
       slug: typeof b.slug === "string" ? b.slug.trim() : "",
       name: b.name.trim(),
+      brand: typeof b.brand === "string" && BRANDS.includes(b.brand as (typeof BRANDS)[number]) ? b.brand : "",
       audience: b.audience,
       priceCents: b.priceCents,
       compareAtCents:

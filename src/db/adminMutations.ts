@@ -11,6 +11,7 @@ import { slugify } from "@/lib/slugify";
 export type ProductInput = {
   slug: string;
   name: string;
+  brand: string;
   audience: "men" | "women" | "kids";
   priceCents: number;
   compareAtCents?: number | null;

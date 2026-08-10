@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AUDIENCES, AUDIENCE_LABELS, type Audience } from "@/lib/audience";
+import { BRANDS } from "@/lib/brands";
 import { eurosToCents } from "@/lib/format";
 import { slugify } from "@/lib/slugify";
 import ChipListInput from "@/components/ChipListInput";
@@ -18,6 +19,7 @@ export default function ProductForm({
   onSubmit: (values: ProductInput) => void | Promise<void>;
 }) {
   const [name, setName] = useState(initial?.name ?? "");
+  const [brand, setBrand] = useState(initial?.brand || BRANDS[0]);
   const [audience, setAudience] = useState<Audience>(initial?.audience ?? "men");
   const [price, setPrice] = useState(initial ? String(initial.priceCents / 100) : "");
   const [compareAt, setCompareAt] = useState(
@@ -58,6 +60,7 @@ export default function ProductForm({
       await onSubmit({
         slug: initial ? initial.slug : slugify(name.trim()),
         name: name.trim(),
+        brand,
         audience,
         priceCents,
         compareAtCents: compareAt ? eurosToCents(compareAt) : null,
@@ -85,19 +88,35 @@ export default function ProductForm({
         />
       </Field>
 
-      <Field label="Audience">
-        <select
-          value={audience}
-          onChange={(e) => setAudience(e.target.value as Audience)}
-          className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-        >
-          {AUDIENCES.map((a) => (
-            <option key={a} value={a}>
-              {AUDIENCE_LABELS[a]}
-            </option>
-          ))}
-        </select>
-      </Field>
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Brand">
+          <select
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+            className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+          >
+            {BRANDS.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        <Field label="Audience">
+          <select
+            value={audience}
+            onChange={(e) => setAudience(e.target.value as Audience)}
+            className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+          >
+            {AUDIENCES.map((a) => (
+              <option key={a} value={a}>
+                {AUDIENCE_LABELS[a]}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <Field label="Price (EUR)" error={errors.price}>

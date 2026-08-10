@@ -20,6 +20,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
   const [audience, setAudience] = useState<Audience | "all">(urlAudience);
   const [syncedAudience, setSyncedAudience] = useState(urlAudience);
   const [sizes, setSizes] = useState<Set<string>>(new Set());
+  const [brands, setBrands] = useState<Set<string>>(new Set());
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState<SortOption>("newest");
@@ -42,8 +43,25 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
     [audienceProducts],
   );
 
+  const availableBrands = useMemo(
+    () =>
+      Array.from(new Set(audienceProducts.map((p) => p.brand).filter(Boolean))).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+    [audienceProducts],
+  );
+
   function toggleSize(value: string) {
     setSizes((prev) => {
+      const next = new Set(prev);
+      if (next.has(value)) next.delete(value);
+      else next.add(value);
+      return next;
+    });
+  }
+
+  function toggleBrand(value: string) {
+    setBrands((prev) => {
       const next = new Set(prev);
       if (next.has(value)) next.delete(value);
       else next.add(value);
@@ -57,6 +75,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
 
     let result = audienceProducts.filter((p) => {
       if (sizes.size > 0 && !p.sizes.some((s) => sizes.has(s))) return false;
+      if (brands.size > 0 && !brands.has(p.brand)) return false;
       if (min !== null && p.priceCents < min) return false;
       if (max !== null && p.priceCents > max) return false;
       return true;
@@ -69,7 +88,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
     });
 
     return result;
-  }, [audienceProducts, sizes, minPrice, maxPrice, sort]);
+  }, [audienceProducts, sizes, brands, minPrice, maxPrice, sort]);
 
   return (
     <main className="mx-auto w-full max-w-7xl px-6 py-12">
@@ -92,6 +111,26 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
               ))}
             </div>
           </FilterGroup>
+
+          {availableBrands.length > 0 && (
+            <FilterGroup title="Brand">
+              <div className="flex flex-wrap gap-2">
+                {availableBrands.map((b) => (
+                  <button
+                    key={b}
+                    onClick={() => toggleBrand(b)}
+                    className={`border px-3 py-1.5 text-xs ${
+                      brands.has(b)
+                        ? "border-fridge-orange bg-fridge-orange text-black"
+                        : "border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+                    }`}
+                  >
+                    {b}
+                  </button>
+                ))}
+              </div>
+            </FilterGroup>
+          )}
 
           {availableSizes.length > 0 && (
             <FilterGroup title="Size (EU)">
