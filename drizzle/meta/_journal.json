@@ -22,6 +22,13 @@
       "when": 1786371660361,
       "tag": "0002_medical_redwing",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786394367656,
+      "tag": "0003_right_domino",
+      "breakpoints": true
     }
   ]
 }

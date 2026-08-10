@@ -1,30 +1,11 @@
-const COOKIE_NAME = "fridge_admin";
-
-async function sha256(text: string) {
-  const data = new TextEncoder().encode(text);
-  const digest = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-export async function expectedAdminCookieValue() {
-  const password = process.env.ADMIN_PASSWORD;
-  if (!password) return null;
-  return sha256(password);
-}
+import { getCurrentUser } from "@/lib/auth";
 
 /**
- * Defense-in-depth check for Route Handlers: middleware already gates
+ * Defense-in-depth check for Route Handlers: the proxy already gates
  * /admin/:path*, but API routes re-verify independently rather than relying
- * solely on middleware having run.
+ * solely on the proxy having run.
  */
 export async function isAdminRequestAuthorized() {
-  const { cookies } = await import("next/headers");
-  const expected = await expectedAdminCookieValue();
-  if (!expected) return false;
-  const cookieStore = await cookies();
-  return cookieStore.get(COOKIE_NAME)?.value === expected;
+  const user = await getCurrentUser();
+  return Boolean(user?.isAdmin);
 }
-
-export { COOKIE_NAME as ADMIN_COOKIE_NAME };

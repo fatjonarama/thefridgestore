@@ -11,6 +11,7 @@ function toPublicUser(user: UserRow): PublicUser {
     id: user.id,
     email: user.email,
     name: user.name,
+    isAdmin: user.isAdmin,
     createdAt: user.createdAt,
   };
 }

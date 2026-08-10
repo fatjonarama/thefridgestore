@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { logoutAdmin } from "@/app/admin/login/actions";
 import { ToastProvider } from "@/context/ToastContext";
 
 const NAV = [
@@ -15,8 +14,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
 
   async function handleLogout() {
-    await logoutAdmin();
-    router.push("/admin/login");
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
     router.refresh();
   }
 

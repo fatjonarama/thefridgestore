@@ -67,6 +67,14 @@ export default function Header({
               </span>
             )}
           </Link>
+          {user?.isAdmin && (
+            <Link
+              href="/admin"
+              className="hidden h-9 items-center border border-fridge-orange px-3 text-xs font-bold tracking-wide text-fridge-orange transition-colors hover:bg-fridge-orange hover:text-black sm:flex"
+            >
+              ADMIN
+            </Link>
+          )}
           {user ? (
             <Link
               href="/account"
