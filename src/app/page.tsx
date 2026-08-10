@@ -1,8 +1,8 @@
 import Link from "next/link";
+import HeroLine from "@/components/HeroLine";
 import Placeholder from "@/components/Placeholder";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
-import TickerBar from "@/components/TickerBar";
 import { getFreshDrops } from "@/db/queries";
 import { AUDIENCES, AUDIENCE_LABELS } from "@/lib/audience";
 
@@ -16,22 +16,18 @@ export default async function Home() {
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-2 md:items-center">
         <div>
           <h1 className="font-display text-6xl leading-[0.95] tracking-wide sm:text-7xl">
-            <span className="hero-in block" style={{ "--hero-delay": "0ms" } as React.CSSProperties}>
-              COLD.
-            </span>
-            <span
-              className="hero-in block text-fridge-orange"
-              style={{ "--hero-delay": "120ms" } as React.CSSProperties}
-            >
-              FRESH.
-            </span>
-            <span className="hero-in block" style={{ "--hero-delay": "240ms" } as React.CSSProperties}>
-              YOURS.
-            </span>
+            <HeroLine text="COLD." startDelay={0} />
+            <HeroLine
+              text="FRESH."
+              startDelay={300}
+              className="text-fridge-orange"
+              fx={{ glitchDelay: 950, pulseDelay: 1400 }}
+            />
+            <HeroLine text="YOURS." startDelay={650} />
           </h1>
           <p
             className="hero-in mt-6 max-w-md text-white/60"
-            style={{ "--hero-delay": "380ms" } as React.CSSProperties}
+            style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
           >
             Street-ready kicks built for the pavement. New drops land every
             Friday — get in before they&apos;re gone.
@@ -39,7 +35,7 @@ export default async function Home() {
           <Link
             href="/shop"
             className="hero-in mt-8 inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
-            style={{ "--hero-delay": "480ms" } as React.CSSProperties}
+            style={{ "--hero-delay": "1500ms" } as React.CSSProperties}
           >
             SHOP THE DROP
           </Link>
@@ -56,8 +52,6 @@ export default async function Home() {
           </Placeholder>
         </div>
       </section>
-
-      <TickerBar />
 
       <section className="mx-auto max-w-7xl px-6 py-12">
         <h2 className="font-display text-2xl tracking-wide">SHOP BY</h2>
