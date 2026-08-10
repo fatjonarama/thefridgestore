@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getOrdersForUser } from "@/db/queries";
 import { formatCents } from "@/lib/format";
+import { formatDate } from "@/lib/formatDate";
 import LogoutButton from "@/components/LogoutButton";
 
 export const dynamic = "force-dynamic";
@@ -43,9 +44,7 @@ export default async function AccountPage() {
               <div key={order.id} className="border border-white/10 p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs text-white/40">
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </p>
+                    <p className="text-xs text-white/40">{formatDate(order.createdAt)}</p>
                     <p className="mt-1 font-display text-lg text-fridge-orange">
                       {formatCents(order.totalCents)}
                     </p>

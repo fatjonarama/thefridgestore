@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { products } from "@/db/schema";
+import { orderItems, orders, products, type OrderStatus } from "@/db/schema";
 import { slugify } from "@/lib/slugify";
 
 // Plain server-only module (no "use server") — these are admin mutations,
@@ -79,5 +79,45 @@ export async function softDeleteProduct(id: number) {
     .where(eq(products.id, id))
     .returning();
   revalidateProductPaths(row?.slug);
+  return row;
+}
+
+async function adjustStockForOrder(orderId: number, direction: 1 | -1) {
+  const items = await db
+    .select({ productId: orderItems.productId, qty: orderItems.qty })
+    .from(orderItems)
+    .where(eq(orderItems.orderId, orderId));
+
+  for (const item of items) {
+    if (!item.productId) continue;
+    await db
+      .update(products)
+      .set({ stock: sql`greatest(${products.stock} + ${direction * item.qty}, 0)` })
+      .where(eq(products.id, item.productId));
+  }
+}
+
+/**
+ * Cancelling an order releases its items back into stock; un-cancelling
+ * (moving a cancelled order to any other status) takes them out again, so
+ * stock stays accurate no matter how an admin flips status back and forth.
+ */
+export async function updateOrderStatusAdmin(orderId: number, status: OrderStatus) {
+  const [existing] = await db
+    .select({ status: orders.status })
+    .from(orders)
+    .where(eq(orders.id, orderId))
+    .limit(1);
+  if (!existing) return null;
+
+  if (existing.status !== "cancelled" && status === "cancelled") {
+    await adjustStockForOrder(orderId, 1);
+  } else if (existing.status === "cancelled" && status !== "cancelled") {
+    await adjustStockForOrder(orderId, -1);
+  }
+
+  const [row] = await db.update(orders).set({ status }).where(eq(orders.id, orderId)).returning();
+  revalidatePath("/admin/orders");
+  revalidatePath("/shop");
   return row;
 }

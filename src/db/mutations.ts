@@ -1,9 +1,9 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { orderItems, orders } from "@/db/schema";
+import { orderItems, orders, products } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
 import { SHIPPING_CENTS, type Country } from "@/lib/shipping";
 
@@ -57,16 +57,17 @@ export async function createOrder(input: OrderInput) {
         qty: item.qty,
       })),
     );
+
+    for (const item of input.items) {
+      if (!item.productId) continue;
+      await db
+        .update(products)
+        .set({ stock: sql`greatest(${products.stock} - ${item.qty}, 0)` })
+        .where(eq(products.id, item.productId));
+    }
   }
 
   revalidatePath("/admin/orders");
+  revalidatePath("/shop");
   return order;
-}
-
-export async function updateOrderStatus(
-  orderId: number,
-  status: "pending" | "confirmed" | "fulfilled" | "cancelled",
-) {
-  await db.update(orders).set({ status }).where(eq(orders.id, orderId));
-  revalidatePath("/admin/orders");
 }
