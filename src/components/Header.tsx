@@ -4,13 +4,21 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import FridgeGlyph from "@/components/FridgeGlyph";
+import { displayName } from "@/lib/displayName";
+import type { PublicUser } from "@/lib/auth";
 
 const NAV_LINKS: { label: string; href: string }[] = [
   { label: "MEN", href: "/shop?audience=men" },
   { label: "WOMEN", href: "/shop?audience=women" },
 ];
 
-export default function Header({ onSearchClick }: { onSearchClick: () => void }) {
+export default function Header({
+  onSearchClick,
+  user,
+}: {
+  onSearchClick: () => void;
+  user: PublicUser | null;
+}) {
   const { count, openCart } = useCart();
   const { slugs } = useWishlist();
 
@@ -59,13 +67,22 @@ export default function Header({ onSearchClick }: { onSearchClick: () => void })
               </span>
             )}
           </Link>
-          <Link
-            href="/account"
-            aria-label="Account"
-            className="hidden h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
-          >
-            <UserIcon />
-          </Link>
+          {user ? (
+            <Link
+              href="/account"
+              className="hidden h-9 items-center border border-white/15 px-3 text-xs font-bold tracking-wide text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
+            >
+              {displayName(user)}
+            </Link>
+          ) : (
+            <Link
+              href="/account"
+              aria-label="Account"
+              className="hidden h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
+            >
+              <UserIcon />
+            </Link>
+          )}
           <button
             onClick={openCart}
             className="bg-fridge-orange px-4 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95"
