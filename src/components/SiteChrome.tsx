@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import SearchOverlay from "@/components/SearchOverlay";
-import TickerBar from "@/components/TickerBar";
 import type { PublicUser } from "@/lib/auth";
 
 export default function SiteChrome({ user }: { user: PublicUser | null }) {
@@ -16,7 +15,6 @@ export default function SiteChrome({ user }: { user: PublicUser | null }) {
 
   return (
     <>
-      <TickerBar />
       <Header onSearchClick={() => setSearchOpen(true)} user={user} />
       <CartDrawer />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />

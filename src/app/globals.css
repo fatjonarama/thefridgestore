@@ -86,7 +86,7 @@ body {
   }
 
   .marquee-track {
-    animation: marquee 22s linear infinite;
+    animation: marquee 160s linear infinite;
   }
 
   .ticker-bar:hover .marquee-track {

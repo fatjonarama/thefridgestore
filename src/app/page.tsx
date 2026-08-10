@@ -2,6 +2,7 @@ import Link from "next/link";
 import Placeholder from "@/components/Placeholder";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
+import TickerBar from "@/components/TickerBar";
 import { getFreshDrops } from "@/db/queries";
 import { AUDIENCES, AUDIENCE_LABELS } from "@/lib/audience";
 
@@ -55,6 +56,8 @@ export default async function Home() {
           </Placeholder>
         </div>
       </section>
+
+      <TickerBar />
 
       <section className="mx-auto max-w-7xl px-6 py-12">
         <h2 className="font-display text-2xl tracking-wide">SHOP BY</h2>
