@@ -24,10 +24,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="flex min-h-screen flex-1 flex-col md:flex-row">
         {/* Sidebar (desktop) */}
         <aside className="hidden w-56 shrink-0 flex-col border-r border-white/10 bg-[#0d0d0d] md:flex">
-          <div className="border-b border-white/10 px-5 py-5">
+          <Link href="/" className="block border-b border-white/10 px-5 py-5">
             <p className="font-display text-lg tracking-wide">THE FRIDGE</p>
             <p className="text-[11px] uppercase tracking-wide text-white/40">Admin</p>
-          </div>
+          </Link>
           <nav className="flex flex-1 flex-col gap-1 px-3 py-4 text-sm font-semibold">
             {NAV.map((item) => {
               const active = pathname.startsWith(item.href);
@@ -62,10 +62,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Top bar + tabs (mobile) */}
         <div className="border-b border-white/10 bg-[#0d0d0d] md:hidden">
           <div className="flex items-center justify-between px-4 py-4">
-            <div>
+            <Link href="/">
               <p className="font-display text-base tracking-wide">THE FRIDGE</p>
               <p className="text-[10px] uppercase tracking-wide text-white/40">Admin</p>
-            </div>
+            </Link>
             <button onClick={handleLogout} className="text-xs text-white/50 hover:text-white">
               Log out
             </button>
