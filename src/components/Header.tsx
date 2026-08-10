@@ -70,7 +70,7 @@ export default function Header({
           {user?.isAdmin && (
             <Link
               href="/admin"
-              className="hidden h-9 items-center border border-fridge-orange px-3 text-xs font-bold tracking-wide text-fridge-orange transition-colors hover:bg-fridge-orange hover:text-black sm:flex"
+              className="hidden text-xs font-bold tracking-wide text-white/40 transition-colors hover:text-fridge-orange sm:inline"
             >
               ADMIN
             </Link>
