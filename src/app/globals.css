@@ -55,6 +55,15 @@ body {
   }
 }
 
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .reveal,
 .hero-in {
   opacity: 1;
@@ -74,6 +83,14 @@ body {
 
   .glow-pulse {
     animation: glow-pulse 5s ease-in-out infinite;
+  }
+
+  .marquee-track {
+    animation: marquee 22s linear infinite;
+  }
+
+  .ticker-bar:hover .marquee-track {
+    animation-play-state: paused;
   }
 
   .reveal {
