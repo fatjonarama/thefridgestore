@@ -68,7 +68,7 @@ for (const row of rows) {
   const active = parseBool(row.active, true);
 
   values.push(
-    `(${sqlString(slug)}, ${sqlString(row.name.trim())}, ${sqlString("")}, NULL, ` +
+    `(${sqlString(slug)}, ${sqlString(row.name.trim())}, ` +
       `${sqlString(row.audience.trim().toLowerCase())}, ${priceCents}, ` +
       `${compareAtCents ?? "NULL"}, ${sqlString(description)}, ${sqlArray(images)}, ` +
       `${sqlArray(colors)}, ${sqlArray(sizes)}, ${stock}, ${isNew}, ${active})`,
@@ -76,7 +76,7 @@ for (const row of rows) {
 }
 
 const sql =
-  `INSERT INTO "products" ("slug", "name", "category", "subcategory", "audience", ` +
+  `INSERT INTO "products" ("slug", "name", "audience", ` +
   `"price_cents", "compare_at_cents", "description", "images", "colors", "sizes", ` +
   `"stock", "is_new", "active")\nVALUES\n  ${values.join(",\n  ")}\n` +
   `ON CONFLICT ("slug") DO NOTHING;\n`;

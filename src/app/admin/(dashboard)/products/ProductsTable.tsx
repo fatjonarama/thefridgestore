@@ -34,11 +34,7 @@ export default function ProductsTable({ initial }: { initial: ProductRow[] }) {
     let result = products.filter((p) => {
       if (audienceFilter !== "all" && p.audience !== audienceFilter) return false;
       if (!q) return true;
-      return (
-        p.name.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
-        p.slug.toLowerCase().includes(q)
-      );
+      return p.name.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q);
     });
 
     if (sortKey) {
@@ -94,7 +90,7 @@ export default function ProductsTable({ initial }: { initial: ProductRow[] }) {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search name, category, slug…"
+          placeholder="Search name, slug…"
           className="min-w-[240px] flex-1 border border-white/15 bg-transparent px-3 py-2.5 text-sm outline-none focus:border-fridge-orange"
         />
         <select
@@ -121,7 +117,6 @@ export default function ProductsTable({ initial }: { initial: ProductRow[] }) {
             <thead>
               <tr className="border-b border-white/10 text-xs uppercase tracking-wide text-white/40">
                 <th className="px-4 py-3 font-normal">Product</th>
-                <th className="px-4 py-3 font-normal">Category</th>
                 <th className="px-4 py-3 font-normal">Audience</th>
                 <SortableHeader
                   label="Price"
@@ -162,7 +157,6 @@ export default function ProductsTable({ initial }: { initial: ProductRow[] }) {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-white/70">{product.category || "—"}</td>
                     <td className="px-4 py-3 text-white/70">
                       {AUDIENCE_LABELS[product.audience]}
                     </td>

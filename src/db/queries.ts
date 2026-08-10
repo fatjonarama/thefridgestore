@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, inArray, ne, or } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { orderItems, orders, products, type OrderItemRow, type OrderRow, type ProductRow } from "@/db/schema";
 
@@ -88,12 +88,6 @@ export async function searchProducts(query: string, limit = 8): Promise<ProductR
   return db
     .select()
     .from(products)
-    .where(
-      and(
-        eq(products.active, true),
-        notKids,
-        or(ilike(products.name, q), ilike(products.category, q)),
-      ),
-    )
+    .where(and(eq(products.active, true), notKids, ilike(products.name, q)))
     .limit(limit);
 }

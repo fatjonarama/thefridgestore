@@ -25,8 +25,6 @@ export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
-  category: text("category").notNull(),
-  subcategory: text("subcategory"),
   audience: audienceEnum("audience").notNull(),
   priceCents: integer("price_cents").notNull(),
   compareAtCents: integer("compare_at_cents"),

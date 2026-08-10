@@ -18,10 +18,6 @@ export default function ProductForm({
   onSubmit: (values: ProductInput) => void | Promise<void>;
 }) {
   const [name, setName] = useState(initial?.name ?? "");
-  const [slug, setSlug] = useState(initial?.slug ?? "");
-  const [slugTouched, setSlugTouched] = useState(Boolean(initial));
-  const [category, setCategory] = useState(initial?.category ?? "");
-  const [subcategory, setSubcategory] = useState(initial?.subcategory ?? "");
   const [audience, setAudience] = useState<Audience>(initial?.audience ?? "men");
   const [price, setPrice] = useState(initial ? String(initial.priceCents / 100) : "");
   const [compareAt, setCompareAt] = useState(
@@ -37,11 +33,6 @@ export default function ProductForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
-  function handleNameChange(value: string) {
-    setName(value);
-    if (!slugTouched) setSlug(slugify(value));
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -50,7 +41,6 @@ export default function ProductForm({
 
     const nextErrors: Record<string, string> = {};
     if (!name.trim()) nextErrors.name = "Name is required.";
-    if (!slug.trim()) nextErrors.slug = "Slug is required.";
     if (!Number.isFinite(priceCents) || priceCents <= 0)
       nextErrors.price = "Enter a price greater than 0.";
     if (sizes.length === 0) nextErrors.sizes = "Add at least one size.";
@@ -66,10 +56,8 @@ export default function ProductForm({
     setSubmitting(true);
     try {
       await onSubmit({
-        slug: slugify(slug),
+        slug: initial ? initial.slug : slugify(name.trim()),
         name: name.trim(),
-        category: category.trim(),
-        subcategory: subcategory.trim() || undefined,
         audience,
         priceCents,
         compareAtCents: compareAt ? eurosToCents(compareAt) : null,
@@ -91,57 +79,24 @@ export default function ProductForm({
       <Field label="Name" error={errors.name}>
         <input
           value={name}
-          onChange={(e) => handleNameChange(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
           placeholder="e.g. Blackout 04"
         />
       </Field>
 
-      <Field label="Slug" error={errors.slug}>
-        <input
-          value={slug}
-          onChange={(e) => {
-            setSlug(e.target.value);
-            setSlugTouched(true);
-          }}
-          className="border border-white/15 bg-transparent px-3 py-3 font-mono text-sm outline-none focus:border-fridge-orange"
-          placeholder="blackout-04"
-        />
-        <span className="text-xs text-white/40">/product/{slug || "…"}</span>
-      </Field>
-
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Audience">
-          <select
-            value={audience}
-            onChange={(e) => setAudience(e.target.value as Audience)}
-            className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          >
-            {AUDIENCES.map((a) => (
-              <option key={a} value={a}>
-                {AUDIENCE_LABELS[a]}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <Field label="Category">
-          <input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-            placeholder="e.g. Running"
-          />
-        </Field>
-      </div>
-
-      <Field label="Subcategory (optional)">
-        <input
-          value={subcategory}
-          onChange={(e) => setSubcategory(e.target.value)}
-          className="border border-white/15 bg-transparent px-3 py-3 text-sm outline-none focus:border-fridge-orange"
-          placeholder="e.g. Low-top"
-        />
+      <Field label="Audience">
+        <select
+          value={audience}
+          onChange={(e) => setAudience(e.target.value as Audience)}
+          className="border border-white/15 bg-background px-3 py-3 text-sm outline-none focus:border-fridge-orange"
+        >
+          {AUDIENCES.map((a) => (
+            <option key={a} value={a}>
+              {AUDIENCE_LABELS[a]}
+            </option>
+          ))}
+        </select>
       </Field>
 
       <div className="grid grid-cols-2 gap-4">

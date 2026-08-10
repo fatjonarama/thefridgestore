@@ -83,8 +83,6 @@ async function main() {
       slug,
       name: row.name.trim(),
       audience: row.audience.trim().toLowerCase() as "men" | "women" | "kids",
-      category: "",
-      subcategory: null,
       priceCents: eurosToCents(row.price),
       compareAtCents: row.compareAt ? eurosToCents(row.compareAt) : null,
       description: row.description?.trim() ?? "",

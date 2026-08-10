@@ -25,11 +25,6 @@ export function validateProductInput(
     input: {
       slug: typeof b.slug === "string" ? b.slug.trim() : "",
       name: b.name.trim(),
-      category: typeof b.category === "string" ? b.category.trim() : "",
-      subcategory:
-        typeof b.subcategory === "string" && b.subcategory.trim()
-          ? b.subcategory.trim()
-          : undefined,
       audience: b.audience,
       priceCents: b.priceCents,
       compareAtCents:
