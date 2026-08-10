@@ -7,7 +7,9 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { useToast } from "@/context/ToastContext";
 import { adminFetch } from "@/lib/adminFetch";
 import { AUDIENCE_LABELS, type Audience } from "@/lib/audience";
+import { BRANDS } from "@/lib/brands";
 import { formatCents } from "@/lib/format";
+import type { ProductInput } from "@/db/adminMutations";
 import type { ProductRow } from "@/db/schema";
 
 const LOW_STOCK_THRESHOLD = 5;
@@ -23,6 +25,7 @@ export default function ProductsTable({ initial }: { initial: ProductRow[] }) {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [pendingDelete, setPendingDelete] = useState<ProductRow | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [savingBrandId, setSavingBrandId] = useState<number | null>(null);
 
   const audiences = useMemo(
     () => Array.from(new Set(products.map((p) => p.audience))) as Audience[],
@@ -58,6 +61,37 @@ export default function ProductsTable({ initial }: { initial: ProductRow[] }) {
     } else {
       setSortKey(key);
       setSortDir("asc");
+    }
+  }
+
+  async function handleBrandChange(product: ProductRow, brand: string) {
+    setSavingBrandId(product.id);
+    const values: ProductInput = {
+      slug: product.slug,
+      name: product.name,
+      brand,
+      audience: product.audience,
+      priceCents: product.priceCents,
+      compareAtCents: product.compareAtCents,
+      description: product.description,
+      images: product.images,
+      colors: product.colors,
+      sizes: product.sizes,
+      stock: product.stock,
+      isNew: product.isNew,
+      active: product.active,
+    };
+    try {
+      const { product: updated } = await adminFetch<{ product: ProductRow }>(
+        `/api/admin/products/${product.id}`,
+        { method: "PATCH", body: JSON.stringify(values) },
+      );
+      setProducts((prev) => prev.map((p) => (p.id === product.id ? updated : p)));
+      toast.success(`Brand set for "${product.name}".`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update brand.");
+    } finally {
+      setSavingBrandId(null);
     }
   }
 
@@ -162,7 +196,21 @@ export default function ProductsTable({ initial }: { initial: ProductRow[] }) {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-white/70">{product.brand || "—"}</td>
+                    <td className="px-4 py-3">
+                      <select
+                        value={product.brand}
+                        onChange={(e) => handleBrandChange(product, e.target.value)}
+                        disabled={savingBrandId === product.id}
+                        className="border border-white/15 bg-background px-2 py-1.5 text-xs outline-none focus:border-fridge-orange disabled:opacity-50"
+                      >
+                        <option value="">— No brand —</option>
+                        {BRANDS.map((b) => (
+                          <option key={b} value={b}>
+                            {b}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
                     <td className="px-4 py-3 text-white/70">
                       {AUDIENCE_LABELS[product.audience]}
                     </td>
