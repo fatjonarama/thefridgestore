@@ -64,6 +64,25 @@ export async function getAllOrdersWithItems(): Promise<OrderWithItems[]> {
   }));
 }
 
+export async function getOrdersForUser(userId: number): Promise<OrderWithItems[]> {
+  const orderRows = await db
+    .select()
+    .from(orders)
+    .where(eq(orders.userId, userId))
+    .orderBy(desc(orders.createdAt));
+  if (orderRows.length === 0) return [];
+
+  const itemRows = await db
+    .select()
+    .from(orderItems)
+    .where(inArray(orderItems.orderId, orderRows.map((o) => o.id)));
+
+  return orderRows.map((order) => ({
+    ...order,
+    items: itemRows.filter((item) => item.orderId === order.id),
+  }));
+}
+
 export async function searchProducts(query: string, limit = 8): Promise<ProductRow[]> {
   const q = `%${query}%`;
   return db

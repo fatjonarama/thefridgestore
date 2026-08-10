@@ -15,6 +15,13 @@
       "when": 1786314031563,
       "tag": "0001_tranquil_tenebrous",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786371660361,
+      "tag": "0002_medical_redwing",
+      "breakpoints": true
     }
   ]
 }
