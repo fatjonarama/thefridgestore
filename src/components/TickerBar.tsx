@@ -1,7 +1,8 @@
 const MESSAGES = [
-  "NEW DROPS EVERY FRIDAY",
+  "THE SALE HAS STARTED",
   "STRAIGHT OUT THE FRIDGE",
   "LIMITED SIZES — DON'T SLEEP",
+  "WORLDWIDE DELIVERY",
 ];
 
 // Repeated so a single group is comfortably wider than any real viewport —

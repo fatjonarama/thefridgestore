@@ -13,12 +13,19 @@ function audienceFromParams(searchParams: URLSearchParams): Audience | "all" {
   return a && isAudience(a) ? a : "all";
 }
 
+function isOnSale(p: ProductRow) {
+  return p.compareAtCents !== null && p.compareAtCents > p.priceCents;
+}
+
 export default function ShopClient({ products }: { products: ProductRow[] }) {
   const searchParams = useSearchParams();
   const urlAudience = audienceFromParams(searchParams);
+  const urlSaleOnly = searchParams.get("sale") === "true";
 
   const [audience, setAudience] = useState<Audience | "all">(urlAudience);
   const [syncedAudience, setSyncedAudience] = useState(urlAudience);
+  const [saleOnly, setSaleOnly] = useState(urlSaleOnly);
+  const [syncedSaleOnly, setSyncedSaleOnly] = useState(urlSaleOnly);
   const [sizes, setSizes] = useState<Set<string>>(new Set());
   const [brands, setBrands] = useState<Set<string>>(new Set());
   const [minPrice, setMinPrice] = useState("");
@@ -28,6 +35,10 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
   if (urlAudience !== syncedAudience) {
     setSyncedAudience(urlAudience);
     setAudience(urlAudience);
+  }
+  if (urlSaleOnly !== syncedSaleOnly) {
+    setSyncedSaleOnly(urlSaleOnly);
+    setSaleOnly(urlSaleOnly);
   }
 
   const audienceProducts = useMemo(
@@ -74,6 +85,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
     const max = maxPrice ? Number(maxPrice) * 100 : null;
 
     let result = audienceProducts.filter((p) => {
+      if (saleOnly && !isOnSale(p)) return false;
       if (sizes.size > 0 && !p.sizes.some((s) => sizes.has(s))) return false;
       if (brands.size > 0 && !brands.has(p.brand)) return false;
       if (min !== null && p.priceCents < min) return false;
@@ -88,7 +100,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
     });
 
     return result;
-  }, [audienceProducts, sizes, brands, minPrice, maxPrice, sort]);
+  }, [audienceProducts, saleOnly, sizes, brands, minPrice, maxPrice, sort]);
 
   return (
     <main className="mx-auto w-full max-w-7xl px-6 py-12">
@@ -99,6 +111,12 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
 
       <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[240px_1fr]">
         <aside className="flex flex-col gap-8">
+          <FilterGroup title="Sale">
+            <PillButton active={saleOnly} onClick={() => setSaleOnly((v) => !v)}>
+              On sale only
+            </PillButton>
+          </FilterGroup>
+
           <FilterGroup title="Gender">
             <div className="flex flex-wrap gap-2">
               <PillButton active={audience === "all"} onClick={() => setAudience("all")}>
