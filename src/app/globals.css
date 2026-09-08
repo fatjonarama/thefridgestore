@@ -159,12 +159,38 @@ body {
   }
 }
 
+@keyframes ghost-drift {
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-50%) translateX(-2.5%);
+  }
+}
+
+@keyframes ghost-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .reveal,
 .hero-in,
 .hero-letter {
   opacity: 1;
   transform: none;
   filter: none;
+}
+
+.hero-ghost {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245, 245, 245, 0.09);
+  transform: translateY(-50%);
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -207,6 +233,14 @@ body {
   .ambient-blob-b {
     animation: ambient-drift-b var(--drift-duration, 54s) ease-in-out infinite;
     animation-delay: var(--drift-delay, 0s);
+  }
+
+  .hero-ghost {
+    animation-name: ghost-fade-in, ghost-drift;
+    animation-duration: 0.6s, 16s;
+    animation-timing-function: ease-out, ease-in-out;
+    animation-iteration-count: 1, infinite;
+    animation-fill-mode: forwards, none;
   }
 
   .marquee-track {
