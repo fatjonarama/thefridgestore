@@ -188,7 +188,7 @@ body {
 
 .hero-ghost {
   color: transparent;
-  -webkit-text-stroke: 1px rgba(245, 245, 245, 0.09);
+  -webkit-text-stroke: 2px rgba(245, 245, 245, 0.22);
   transform: translateY(-50%);
   opacity: 1;
 }
