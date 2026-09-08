@@ -20,21 +20,6 @@ body {
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
-.hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Fades the left edge to transparent so the hero slider can overlap the
-   headline without a hard rectangle slicing across the letters. */
-.hero-slider-fade {
-  mask-image: linear-gradient(to right, transparent 0%, black 30%, black 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%, black 100%);
-}
 
 /* ---- entrance / reveal / ambient motion ----
    Base state is always fully visible with no transform, so JS-less and

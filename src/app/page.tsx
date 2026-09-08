@@ -1,6 +1,5 @@
 import Link from "next/link";
 import HeroLine from "@/components/HeroLine";
-import HeroSlider from "@/components/HeroSlider";
 import Placeholder from "@/components/Placeholder";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
@@ -14,40 +13,31 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      <section className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-2 md:items-center">
-        <div className="relative z-0">
-          <h1 className="font-display text-6xl leading-[0.95] tracking-wide sm:text-7xl">
-            <HeroLine text="COLD." startDelay={0} />
-            <HeroLine
-              text="FRESH."
-              startDelay={300}
-              className="text-fridge-orange"
-              fx={{ glitchDelay: 950, pulseDelay: 1400 }}
-            />
-            <HeroLine text="YOURS." startDelay={650} />
-          </h1>
-          <p
-            className="hero-in mt-6 max-w-md text-white/60"
-            style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
-          >
-            Street-ready kicks built for the pavement. New drops land every
-            Friday — get in before they&apos;re gone.
-          </p>
-          <Link
-            href="/shop"
-            className="hero-in mt-8 inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
-            style={{ "--hero-delay": "1500ms" } as React.CSSProperties}
-          >
-            SHOP THE DROP
-          </Link>
-        </div>
-        <div
-          className="hero-in relative z-10 md:-ml-16 lg:-ml-28"
-          style={{ "--hero-delay": "180ms" } as React.CSSProperties}
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <h1 className="font-display text-6xl leading-[0.95] tracking-wide sm:text-7xl">
+          <HeroLine text="COLD." startDelay={0} />
+          <HeroLine
+            text="FRESH."
+            startDelay={300}
+            className="text-fridge-orange"
+            fx={{ glitchDelay: 950, pulseDelay: 1400 }}
+          />
+          <HeroLine text="YOURS." startDelay={650} />
+        </h1>
+        <p
+          className="hero-in mt-6 max-w-md text-white/60"
+          style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
         >
-          <div className="glow-pulse pointer-events-none absolute -inset-8 -z-10 rounded-full bg-fridge-orange/20 blur-3xl" />
-          <HeroSlider />
-        </div>
+          Street-ready kicks built for the pavement. New drops land every
+          Friday — get in before they&apos;re gone.
+        </p>
+        <Link
+          href="/shop"
+          className="hero-in mt-8 inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
+          style={{ "--hero-delay": "1500ms" } as React.CSSProperties}
+        >
+          SHOP THE DROP
+        </Link>
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-12">
