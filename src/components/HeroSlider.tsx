@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Placeholder from "@/components/Placeholder";
 
 const SLIDE_COUNT = 4;
 
@@ -48,10 +47,10 @@ export default function HeroSlider() {
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
         onScroll={onScroll}
-        className="hide-scrollbar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto border-2 border-fridge-orange cursor-grab active:cursor-grabbing"
+        className="hide-scrollbar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto cursor-grab active:cursor-grabbing"
       >
         {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
-          <Placeholder key={i} className="stripe-drift h-full w-full flex-none snap-center" />
+          <div key={i} className="h-full w-full flex-none snap-center" />
         ))}
       </div>
       <div className="mt-3 flex justify-center gap-2">
