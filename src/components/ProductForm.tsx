@@ -6,8 +6,18 @@ import { BRANDS } from "@/lib/brands";
 import { eurosToCents } from "@/lib/format";
 import { slugify } from "@/lib/slugify";
 import ChipListInput from "@/components/ChipListInput";
+import { useToast } from "@/context/ToastContext";
 import type { ProductInput } from "@/db/adminMutations";
 import type { ProductRow } from "@/db/schema";
+
+async function uploadProductImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "Upload failed.");
+  return data.url as string;
+}
 
 export default function ProductForm({
   initial,
@@ -34,6 +44,16 @@ export default function ProductForm({
   const [description, setDescription] = useState(initial?.description ?? "");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const toast = useToast();
+
+  async function handleImageUpload(file: File) {
+    try {
+      return await uploadProductImage(file);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed.");
+      throw err;
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -157,10 +177,12 @@ export default function ProductForm({
       />
 
       <ChipListInput
-        label="Image URLs (optional)"
+        label="Images (optional)"
         values={images}
         onChange={setImages}
         placeholder="https://…"
+        imagePreview
+        onUpload={handleImageUpload}
       />
 
       <Field label="Stock" error={errors.stock}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
@@ -11,6 +11,8 @@ export default function ChipListInput({
   placeholder,
   error,
   swatchPreview = false,
+  imagePreview = false,
+  onUpload,
 }: {
   label: string;
   values: string[];
@@ -18,14 +20,35 @@ export default function ChipListInput({
   placeholder?: string;
   error?: string;
   swatchPreview?: boolean;
+  /** Shows a small thumbnail per chip and shortens the displayed URL to its filename. */
+  imagePreview?: boolean;
+  /** When provided, shows an "Upload" button that picks a local file and adds the returned URL. */
+  onUpload?: (file: File) => Promise<string>;
 }) {
   const [draft, setDraft] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function addDraft() {
     const value = draft.trim();
     if (!value) return;
     if (!values.includes(value)) onChange([...values, value]);
     setDraft("");
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !onUpload) return;
+    setUploading(true);
+    try {
+      const url = await onUpload(file);
+      if (!values.includes(url)) onChange([...values, url]);
+    } catch {
+      // Caller (onUpload) is responsible for surfacing the error to the user.
+    } finally {
+      setUploading(false);
+    }
   }
 
   function removeAt(index: number) {
@@ -49,7 +72,13 @@ export default function ChipListInput({
                   style={{ backgroundColor: v }}
                 />
               )}
-              <span>{v}</span>
+              {imagePreview && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={v} alt="" className="h-8 w-8 shrink-0 border border-white/10 object-cover" />
+              )}
+              <span className="max-w-[180px] truncate">
+                {imagePreview ? v.split("/").pop() : v}
+              </span>
               <button
                 type="button"
                 onClick={() => removeAt(i)}
@@ -83,6 +112,25 @@ export default function ChipListInput({
         >
           ADD
         </button>
+        {onUpload && (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="border border-white/15 px-4 text-xs font-bold tracking-wide text-white/70 hover:border-fridge-orange hover:text-fridge-orange disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {uploading ? "UPLOADING…" : "UPLOAD"}
+            </button>
+          </>
+        )}
       </div>
       {error && <span className="text-xs text-fridge-orange">{error}</span>}
     </div>
