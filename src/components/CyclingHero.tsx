@@ -15,6 +15,7 @@ const PHRASES: Phrase[] = [
   { lines: ["LIMITED SIZES.", "DON'T", "SLEEP."], accentIndex: 2 },
 ];
 
+const GHOST_REPEAT = 14;
 const LETTER_STAGGER_MS = 30;
 const LINE_PAUSE_MS = 150;
 const LETTER_DURATION_MS = 500;
@@ -56,11 +57,12 @@ export default function CyclingHero() {
       <div
         key={`ghost-${index}`}
         aria-hidden
-        className="hero-ghost pointer-events-none absolute left-[6%] top-[62%] hidden -translate-y-1/2 items-center gap-3 whitespace-nowrap font-display leading-none sm:flex"
+        className="hero-ghost pointer-events-none absolute left-1/2 top-[62%] hidden w-screen -translate-x-1/2 -translate-y-1/2 items-center gap-8 overflow-hidden whitespace-nowrap font-display leading-none sm:flex"
         style={{ fontSize: "clamp(3.75rem, 11vw, 8.5rem)" }}
       >
-        <span>{accentWord}</span>
-        <span>{accentWord}</span>
+        {Array.from({ length: GHOST_REPEAT }).map((_, i) => (
+          <span key={i}>{accentWord}</span>
+        ))}
       </div>
       <div className="relative">
         <h1
