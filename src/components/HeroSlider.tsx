@@ -2,7 +2,14 @@
 
 import { useRef, useState } from "react";
 
-const SLIDE_COUNT = 4;
+// Temporary stand-ins (random keyword-matched photos) until real product
+// photography is uploaded — swap these src values for real image URLs.
+const SLIDES = [
+  "https://loremflickr.com/900/900/sneakers,shoes?random=1",
+  "https://loremflickr.com/900/900/sneakers,streetwear?random=2",
+  "https://loremflickr.com/900/900/sneakers,shoes?random=3",
+  "https://loremflickr.com/900/900/sneakers,trainers?random=4",
+];
 
 export default function HeroSlider() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -47,14 +54,21 @@ export default function HeroSlider() {
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
         onScroll={onScroll}
-        className="hide-scrollbar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto cursor-grab active:cursor-grabbing"
+        className="hero-slider-fade hide-scrollbar flex aspect-square w-full snap-x snap-mandatory overflow-x-auto cursor-grab active:cursor-grabbing"
       >
-        {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
-          <div key={i} className="h-full w-full flex-none snap-center" />
+        {SLIDES.map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={i}
+            src={src}
+            alt=""
+            draggable={false}
+            className="h-full w-full flex-none snap-center object-cover"
+          />
         ))}
       </div>
       <div className="mt-3 flex justify-center gap-2">
-        {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
+        {SLIDES.map((_, i) => (
           <button
             key={i}
             aria-label={`Go to slide ${i + 1}`}

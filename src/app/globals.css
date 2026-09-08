@@ -29,6 +29,13 @@ body {
   display: none;
 }
 
+/* Fades the left edge to transparent so the hero slider can overlap the
+   headline without a hard rectangle slicing across the letters. */
+.hero-slider-fade {
+  mask-image: linear-gradient(to right, transparent 0%, black 30%, black 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%, black 100%);
+}
+
 /* ---- entrance / reveal / ambient motion ----
    Base state is always fully visible with no transform, so JS-less and
    reduced-motion visitors see the final layout immediately. Motion is

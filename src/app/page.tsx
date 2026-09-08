@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <main className="flex-1">
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-2 md:items-center">
-        <div>
+        <div className="relative z-0">
           <h1 className="font-display text-6xl leading-[0.95] tracking-wide sm:text-7xl">
             <HeroLine text="COLD." startDelay={0} />
             <HeroLine
@@ -42,7 +42,7 @@ export default async function Home() {
           </Link>
         </div>
         <div
-          className="hero-in relative"
+          className="hero-in relative z-10 md:-ml-16 lg:-ml-28"
           style={{ "--hero-delay": "180ms" } as React.CSSProperties}
         >
           <div className="glow-pulse pointer-events-none absolute -inset-8 -z-10 rounded-full bg-fridge-orange/20 blur-3xl" />
