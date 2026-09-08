@@ -3,6 +3,7 @@ import { Anton, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
+import AmbientGlow from "@/components/AmbientGlow";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
 import { getCurrentUser } from "@/lib/auth";
@@ -33,6 +34,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${anton.variable} ${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-background text-white antialiased">
+        <AmbientGlow />
         <CartProvider>
           <WishlistProvider>
             <SiteChrome user={user} />

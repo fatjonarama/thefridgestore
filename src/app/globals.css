@@ -128,6 +128,36 @@ body {
   }
 }
 
+@keyframes ambient-drift-a {
+  0% {
+    transform: translate(-8%, -6%) scale(1);
+  }
+  33% {
+    transform: translate(10%, 8%) scale(1.15);
+  }
+  66% {
+    transform: translate(-4%, 14%) scale(0.95);
+  }
+  100% {
+    transform: translate(-8%, -6%) scale(1);
+  }
+}
+
+@keyframes ambient-drift-b {
+  0% {
+    transform: translate(6%, 10%) scale(1);
+  }
+  33% {
+    transform: translate(-10%, -4%) scale(0.9);
+  }
+  66% {
+    transform: translate(4%, -14%) scale(1.1);
+  }
+  100% {
+    transform: translate(6%, 10%) scale(1);
+  }
+}
+
 .reveal,
 .hero-in,
 .hero-letter {
@@ -166,6 +196,16 @@ body {
 
   .glow-pulse {
     animation: glow-pulse 5s ease-in-out infinite;
+  }
+
+  .ambient-blob-a {
+    animation: ambient-drift-a var(--drift-duration, 42s) ease-in-out infinite;
+    animation-delay: var(--drift-delay, 0s);
+  }
+
+  .ambient-blob-b {
+    animation: ambient-drift-b var(--drift-duration, 54s) ease-in-out infinite;
+    animation-delay: var(--drift-delay, 0s);
   }
 
   .marquee-track {
