@@ -56,7 +56,7 @@ export default function CyclingHero() {
       <div
         key={`ghost-${index}`}
         aria-hidden
-        className="hero-ghost pointer-events-none absolute inset-x-0 top-[62%] flex -translate-y-1/2 items-center justify-between whitespace-nowrap font-display leading-none"
+        className="hero-ghost pointer-events-none absolute left-[6%] top-[62%] flex -translate-y-1/2 items-center gap-12 whitespace-nowrap font-display leading-none"
         style={{ fontSize: "clamp(3.5rem, 10vw, 7.5rem)" }}
       >
         <span>{accentWord}</span>
