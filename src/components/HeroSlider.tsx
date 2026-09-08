@@ -2,13 +2,13 @@
 
 import { useRef, useState } from "react";
 
-// Temporary stand-ins (random keyword-matched photos) until real product
-// photography is uploaded — swap these src values for real image URLs.
+// Temporary stand-ins (random photos) until real product photography is
+// uploaded — swap these src values for real image URLs.
 const SLIDES = [
-  "https://loremflickr.com/900/900/sneakers,shoes?random=1",
-  "https://loremflickr.com/900/900/sneakers,streetwear?random=2",
-  "https://loremflickr.com/900/900/sneakers,shoes?random=3",
-  "https://loremflickr.com/900/900/sneakers,trainers?random=4",
+  "https://picsum.photos/seed/fridge1/900/900",
+  "https://picsum.photos/seed/fridge2/900/900",
+  "https://picsum.photos/seed/fridge3/900/900",
+  "https://picsum.photos/seed/fridge4/900/900",
 ];
 
 export default function HeroSlider() {
