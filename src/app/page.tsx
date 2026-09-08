@@ -13,7 +13,7 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      <section className="mx-auto max-w-7xl px-6 py-16">
+      <section className="mx-auto max-w-7xl px-6 py-24 md:py-32">
         <CyclingHero />
       </section>
 

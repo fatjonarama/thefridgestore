@@ -53,17 +53,18 @@ export default function CyclingHero() {
 
   return (
     <div className="relative overflow-hidden">
-      <span
+      <div
         key={`ghost-${index}`}
         aria-hidden
-        className="hero-ghost pointer-events-none absolute left-0 top-1/2 block -translate-y-1/2 whitespace-nowrap font-display text-[22vw] leading-none sm:text-[15vw]"
+        className="hero-ghost pointer-events-none absolute left-[10%] top-1/2 flex -translate-y-1/2 gap-20 whitespace-nowrap font-display text-[22vw] leading-none sm:text-[15vw]"
       >
-        {accentWord} {accentWord}
-      </span>
+        <span>{accentWord}</span>
+        <span>{accentWord}</span>
+      </div>
       <div className="relative">
         <h1
           key={index}
-          className="font-display text-6xl leading-[0.95] tracking-wide sm:text-7xl"
+          className="font-display text-6xl leading-[1.08] tracking-wide sm:text-7xl"
         >
           {phrase.lines.map((line, i) => (
             <HeroLine
@@ -76,7 +77,7 @@ export default function CyclingHero() {
           ))}
         </h1>
         <p
-          className="hero-in mt-6 max-w-md text-white/60"
+          className="hero-in mt-8 max-w-md text-white/60"
           style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
         >
           Street-ready kicks built for the pavement. New drops land every
@@ -84,7 +85,7 @@ export default function CyclingHero() {
         </p>
         <Link
           href="/shop"
-          className="hero-in mt-8 inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
+          className="hero-in mt-10 inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
           style={{ "--hero-delay": "1500ms" } as React.CSSProperties}
         >
           SHOP THE DROP
