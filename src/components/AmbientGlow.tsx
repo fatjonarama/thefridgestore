@@ -10,12 +10,12 @@ type Orb = {
 };
 
 const ORBS: Orb[] = [
-  { top: "8%", left: "6%", size: 220, opacity: 0.16, blur: 70, variant: "a", duration: 34, delay: 0 },
-  { top: "62%", left: "82%", size: 160, opacity: 0.18, blur: 55, variant: "b", duration: 40, delay: 4 },
-  { top: "22%", left: "72%", size: 130, opacity: 0.14, blur: 45, variant: "a", duration: 46, delay: 8 },
-  { top: "78%", left: "14%", size: 190, opacity: 0.15, blur: 60, variant: "b", duration: 38, delay: 2 },
-  { top: "45%", left: "42%", size: 140, opacity: 0.12, blur: 50, variant: "a", duration: 50, delay: 6 },
-  { top: "5%", left: "48%", size: 110, opacity: 0.13, blur: 40, variant: "b", duration: 44, delay: 10 },
+  { top: "8%", left: "6%", size: 380, opacity: 0.16, blur: 110, variant: "a", duration: 34, delay: 0 },
+  { top: "62%", left: "82%", size: 300, opacity: 0.18, blur: 95, variant: "b", duration: 40, delay: 4 },
+  { top: "22%", left: "72%", size: 250, opacity: 0.14, blur: 80, variant: "a", duration: 46, delay: 8 },
+  { top: "78%", left: "14%", size: 340, opacity: 0.15, blur: 100, variant: "b", duration: 38, delay: 2 },
+  { top: "45%", left: "42%", size: 270, opacity: 0.12, blur: 90, variant: "a", duration: 50, delay: 6 },
+  { top: "5%", left: "48%", size: 220, opacity: 0.13, blur: 75, variant: "b", duration: 44, delay: 10 },
 ];
 
 export default function AmbientGlow() {
