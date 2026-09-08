@@ -1,5 +1,6 @@
 import Link from "next/link";
 import HeroLine from "@/components/HeroLine";
+import HeroSlider from "@/components/HeroSlider";
 import Placeholder from "@/components/Placeholder";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
@@ -45,11 +46,7 @@ export default async function Home() {
           style={{ "--hero-delay": "180ms" } as React.CSSProperties}
         >
           <div className="glow-pulse pointer-events-none absolute -inset-8 -z-10 rounded-full bg-fridge-orange/20 blur-3xl" />
-          <Placeholder className="stripe-drift relative aspect-square w-full border-2 border-fridge-orange">
-            <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs tracking-widest text-white/40">
-              HERO SNEAKER SHOT
-            </span>
-          </Placeholder>
+          <HeroSlider />
         </div>
       </section>
 

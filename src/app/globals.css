@@ -20,6 +20,15 @@ body {
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* ---- entrance / reveal / ambient motion ----
    Base state is always fully visible with no transform, so JS-less and
    reduced-motion visitors see the final layout immediately. Motion is
