@@ -13,7 +13,7 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      <section className="mx-auto max-w-7xl px-6 py-24 md:py-32">
+      <section className="mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-14">
         <HeroCarousel />
       </section>
 
