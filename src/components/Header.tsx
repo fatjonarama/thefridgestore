@@ -49,7 +49,7 @@ export default function Header({
 
   return (
     <header
-      className={`glass sticky top-0 z-30 border-b transition-colors duration-300 ${
+      className={`glass sticky top-0 z-30 transition-colors duration-300 ${
         scrolled ? "glass-scrolled" : ""
       }`}
     >
@@ -138,6 +138,7 @@ export default function Header({
           </button>
         </div>
       </div>
+      <div className="divider-frost" aria-hidden="true" />
     </header>
   );
 }
