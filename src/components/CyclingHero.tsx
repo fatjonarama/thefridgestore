@@ -66,31 +66,16 @@ export default function CyclingHero() {
             />
           ))}
         </h1>
-        <p
-          className="hero-in mt-8 max-w-md text-body/80"
-          style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
-        >
-          Street-ready kicks built for the pavement. New drops land every
-          Friday — get in before they&apos;re gone.
-        </p>
         <div
-          className="hero-in mt-10 flex flex-wrap items-center gap-4"
-          style={{ "--hero-delay": "1500ms" } as React.CSSProperties}
+          className="hero-in mt-10"
+          style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
         >
           <Link
             href="/shop"
-            className="btn-frost-primary inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
+            className="btn-frost-primary block w-full bg-fridge-orange px-8 py-4 text-center text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:w-1/2 sm:min-w-[180px] sm:hover:scale-[1.03]"
           >
             SHOP THE DROP
           </Link>
-          <span
-            className="temp-badge inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold tracking-wide"
-            role="text"
-            aria-label="Fridge temperature: minus 4 degrees Celsius"
-          >
-            <span aria-hidden="true">❄</span>
-            <span aria-hidden="true">−4°C</span>
-          </span>
         </div>
       </div>
     </div>

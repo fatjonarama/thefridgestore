@@ -114,13 +114,6 @@ body {
   background: linear-gradient(90deg, transparent, var(--border-ice) 50%, transparent);
 }
 
-.temp-badge {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  color: var(--ice-500);
-  border: 1px solid var(--border-ice);
-  background: var(--surface-glass);
-}
-
 /* ---- entrance / reveal / ambient motion ----
    Base state is always fully visible with no transform, so JS-less and
    reduced-motion visitors see the final layout immediately. Motion is
