@@ -67,14 +67,21 @@ export default function CyclingHero() {
           ))}
         </h1>
         <div
-          className="hero-in mt-10"
+          className="hero-in mt-10 flex flex-wrap items-center gap-4"
           style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
         >
           <Link
             href="/shop"
-            className="btn-frost-primary block w-full bg-fridge-orange px-8 py-4 text-center text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:w-1/2 sm:min-w-[180px] sm:hover:scale-[1.03]"
+            className="btn-frost-primary inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
           >
             SHOP THE DROP
+          </Link>
+          <Link
+            href="/shop?sale=true"
+            className="glass inline-flex items-center gap-1.5 border px-5 py-3 text-xs font-bold tracking-wide text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
+          >
+            <span aria-hidden="true">❄</span>
+            SALE
           </Link>
         </div>
       </div>

@@ -11,23 +11,54 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
   const [size, setSize] = useState<string | null>(null);
   const [color, setColor] = useState<string | null>(product.colors[0] ?? null);
   const [error, setError] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(product.slug);
   const outOfStock = product.stock <= 0;
+  const hasImages = product.images.length > 0;
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
-      <Placeholder className="relative aspect-square w-full">
-        {product.isNew && (
-          <span className="absolute left-3 top-3 bg-fridge-orange px-2 py-1 text-[10px] font-bold tracking-wide text-black">
-            NEW DROP
-          </span>
+      <div>
+        <div className="relative aspect-square w-full overflow-hidden">
+          {hasImages ? (
+            <img
+              src={product.images[activeImage]}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <Placeholder className="h-full w-full" />
+          )}
+          {product.isNew && (
+            <span className="absolute left-3 top-3 bg-fridge-orange px-2 py-1 text-[10px] font-bold tracking-wide text-black">
+              NEW DROP
+            </span>
+          )}
+          {!hasImages && (
+            <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs tracking-widest text-muted">
+              PRODUCT PHOTO
+            </span>
+          )}
+        </div>
+        {product.images.length > 1 && (
+          <div className="mt-3 flex gap-2">
+            {product.images.map((src, i) => (
+              <button
+                key={src}
+                onClick={() => setActiveImage(i)}
+                aria-label={`View photo ${i + 1}`}
+                className={`h-16 w-16 overflow-hidden border ${
+                  i === activeImage ? "border-fridge-orange" : "border-frost"
+                }`}
+              >
+                <img src={src} alt="" className="h-full w-full object-cover" />
+              </button>
+            ))}
+          </div>
         )}
-        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs tracking-widest text-muted">
-          PRODUCT PHOTO
-        </span>
-      </Placeholder>
+      </div>
 
       <div>
         <h1 className="font-display text-4xl tracking-wide">{product.name}</h1>

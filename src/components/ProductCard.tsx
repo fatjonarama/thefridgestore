@@ -92,7 +92,27 @@ export default function ProductCard({ product }: { product: ProductRow }) {
         onClick={handleImageClick}
         className="relative block aspect-square w-full cursor-pointer overflow-hidden"
       >
-        <Placeholder className="relative h-full w-full transition-transform duration-500 ease-out group-hover:scale-105">
+        <div className="relative h-full w-full transition-transform duration-500 ease-out group-hover:scale-105">
+          {product.images.length > 0 ? (
+            <>
+              <img
+                src={product.images[0]}
+                alt=""
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              {product.images[1] && (
+                <img
+                  src={product.images[1]}
+                  alt=""
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                />
+              )}
+            </>
+          ) : (
+            <Placeholder className="absolute inset-0 h-full w-full" />
+          )}
           <span className="pointer-events-none absolute inset-0 opacity-100 transition-opacity duration-500 [background:linear-gradient(135deg,rgba(168,216,240,0.14),transparent_60%)] group-hover:opacity-0" />
           {product.isNew && (
             <span className="absolute left-2 top-2 bg-fridge-orange px-2 py-1 text-[10px] font-bold tracking-wide text-black">
@@ -109,15 +129,17 @@ export default function ProductCard({ product }: { product: ProductRow }) {
               SOLD OUT
             </span>
           )}
-          <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-[10px] tracking-widest text-white/30">
-            PRODUCT PHOTO
-          </span>
+          {product.images.length === 0 && (
+            <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-[10px] tracking-widest text-white/30">
+              PRODUCT PHOTO
+            </span>
+          )}
           {heartPop && (
             <span className="heart-pop pointer-events-none absolute inset-0 flex items-center justify-center text-7xl text-fridge-orange">
               ♥
             </span>
           )}
-        </Placeholder>
+        </div>
       </div>
       <Link href={`/product/${product.slug}`} className="block px-3 py-3">
         <p className="text-sm font-bold tracking-wide transition-colors group-hover:text-fridge-orange">
