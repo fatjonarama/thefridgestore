@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import FrostCanvas from "@/components/FrostCanvas";
 import HeroLine from "@/components/HeroLine";
 
 type Phrase = {
@@ -53,7 +52,6 @@ export default function CyclingHero() {
 
   return (
     <div className="relative overflow-hidden">
-      <FrostCanvas />
       <div className="relative">
         <h1
           key={index}
