@@ -62,9 +62,9 @@ export default function SearchOverlay({
           visible ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
         }`}
       >
-        <div className="border border-white/15 bg-background">
-          <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
-            <span className="text-white/40">
+        <div className="glass border">
+          <div className="flex items-center gap-3 border-b border-frost px-4 py-3">
+            <span className="text-ice-300">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" />
                 <path d="m21 21-4.35-4.35" />
@@ -75,11 +75,11 @@ export default function SearchOverlay({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search sneakers…"
-              className="flex-1 bg-transparent py-1 text-sm outline-none placeholder:text-white/30"
+              className="flex-1 bg-transparent py-1 text-sm outline-none placeholder:text-muted"
             />
             <button
               onClick={onClose}
-              className="text-xs text-white/40 hover:text-fridge-orange"
+              className="text-xs text-muted hover:text-fridge-orange"
             >
               ESC
             </button>
@@ -88,12 +88,12 @@ export default function SearchOverlay({
           {query.trim() && !loading && (
             <ul className="max-h-96 overflow-y-auto">
               {results.length === 0 ? (
-                <li className="px-4 py-6 text-center text-sm text-white/40">
+                <li className="px-4 py-6 text-center text-sm text-muted">
                   No results for &ldquo;{query}&rdquo;
                 </li>
               ) : (
                 results.map((p) => (
-                  <li key={p.slug} className="border-b border-white/5 last:border-0">
+                  <li key={p.slug} className="border-b border-frost last:border-0">
                     <Link
                       href={`/product/${p.slug}`}
                       onClick={onClose}
@@ -103,7 +103,7 @@ export default function SearchOverlay({
                         <span className="text-sm font-bold tracking-wide">
                           {p.name}
                         </span>
-                        <span className="ml-2 text-xs text-white/40">
+                        <span className="ml-2 text-xs text-muted">
                           {AUDIENCE_LABELS[p.audience]}
                         </span>
                       </span>

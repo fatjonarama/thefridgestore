@@ -24,7 +24,7 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
             NEW DROP
           </span>
         )}
-        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs tracking-widest text-white/30">
+        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-xs tracking-widest text-muted">
           PRODUCT PHOTO
         </span>
       </Placeholder>
@@ -34,12 +34,12 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
         <div className="mt-2 flex items-baseline gap-3">
           <p className="text-xl text-fridge-orange">{formatCents(product.priceCents)}</p>
           {product.compareAtCents && product.compareAtCents > product.priceCents && (
-            <p className="text-sm text-white/40 line-through">
+            <p className="text-sm text-muted line-through">
               {formatCents(product.compareAtCents)}
             </p>
           )}
         </div>
-        <p className="mt-6 max-w-md text-sm text-white/60">{product.description}</p>
+        <p className="mt-6 max-w-md text-sm text-body/80">{product.description}</p>
 
         {product.colors.length > 0 && (
           <div className="mt-8">
@@ -54,7 +54,7 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
                   onClick={() => setColor(c)}
                   style={{ backgroundColor: c }}
                   className={`h-8 w-8 rounded-full border-2 ${
-                    color === c ? "border-fridge-orange" : "border-white/20"
+                    color === c ? "border-fridge-orange" : "border-frost"
                   }`}
                 />
               ))}
@@ -80,7 +80,7 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
                 className={`border py-2 text-sm ${
                   size === s
                     ? "border-fridge-orange bg-fridge-orange text-black"
-                    : "border-white/15 text-white/80 hover:border-fridge-orange hover:text-fridge-orange"
+                    : "border-frost text-ice-300 hover:border-fridge-orange hover:text-fridge-orange"
                 }`}
               >
                 {s}
@@ -107,7 +107,7 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
                 size,
               );
             }}
-            className="flex-1 bg-fridge-orange py-4 text-sm font-bold tracking-wide text-black hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+            className="btn-frost-primary flex-1 bg-fridge-orange py-4 text-sm font-bold tracking-wide text-black hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {outOfStock ? "SOLD OUT" : "ADD TO CART"}
           </button>
@@ -117,7 +117,7 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
             className={`flex h-[52px] w-[52px] items-center justify-center border text-lg ${
               wishlisted
                 ? "border-fridge-orange bg-fridge-orange text-black"
-                : "border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+                : "border-frost text-ice-300 hover:border-fridge-orange hover:text-fridge-orange"
             }`}
           >
             ♥

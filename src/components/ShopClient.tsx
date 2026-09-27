@@ -140,7 +140,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
                     className={`border px-3 py-1.5 text-xs ${
                       brands.has(b)
                         ? "border-fridge-orange bg-fridge-orange text-black"
-                        : "border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+                        : "border-frost text-ice-300 hover:border-fridge-orange hover:text-fridge-orange"
                     }`}
                   >
                     {b}
@@ -160,7 +160,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
                     className={`border px-3 py-1.5 text-xs ${
                       sizes.has(size)
                         ? "border-fridge-orange bg-fridge-orange text-black"
-                        : "border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+                        : "border-frost text-ice-300 hover:border-fridge-orange hover:text-fridge-orange"
                     }`}
                   >
                     {size}
@@ -177,15 +177,15 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
                 onChange={(e) => setMinPrice(e.target.value)}
                 placeholder="Min"
                 inputMode="decimal"
-                className="w-full border border-white/15 bg-transparent px-2 py-2 text-sm outline-none focus:border-fridge-orange"
+                className="w-full border border-frost bg-transparent px-2 py-2 text-sm outline-none focus:border-fridge-orange"
               />
-              <span className="text-white/30">–</span>
+              <span className="text-muted">–</span>
               <input
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
                 placeholder="Max"
                 inputMode="decimal"
-                className="w-full border border-white/15 bg-transparent px-2 py-2 text-sm outline-none focus:border-fridge-orange"
+                className="w-full border border-frost bg-transparent px-2 py-2 text-sm outline-none focus:border-fridge-orange"
               />
             </div>
           </FilterGroup>
@@ -196,7 +196,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="border border-white/15 bg-background px-3 py-2 text-sm outline-none focus:border-fridge-orange"
+              className="border border-frost bg-background px-3 py-2 text-sm outline-none focus:border-fridge-orange"
             >
               <option value="newest">Newest</option>
               <option value="price-asc">Price: Low to High</option>
@@ -205,7 +205,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
           </div>
 
           {filtered.length === 0 ? (
-            <p className="text-sm text-white/40">No products match these filters.</p>
+            <p className="text-sm text-muted">No products match these filters.</p>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((product) => (
@@ -222,7 +222,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="mb-3 text-xs font-bold uppercase tracking-wide text-white/40">{title}</p>
+      <p className="mb-3 text-xs font-bold uppercase tracking-wide text-muted">{title}</p>
       {children}
     </div>
   );
@@ -243,7 +243,7 @@ function PillButton({
       className={`border px-3 py-1.5 text-xs font-bold tracking-wide ${
         active
           ? "border-fridge-orange bg-fridge-orange text-black"
-          : "border-white/15 text-white/70 hover:border-fridge-orange hover:text-fridge-orange"
+          : "border-frost text-ice-300 hover:border-fridge-orange hover:text-fridge-orange"
       }`}
     >
       {children}

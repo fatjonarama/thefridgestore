@@ -23,6 +23,7 @@ export default function HeroLine({
     <span
       className={`hero-letters block ${fx ? "hero-line-fresh-fx " : ""}${className ?? ""}`}
       style={style}
+      role="text"
       aria-label={text}
     >
       {text.split("").map((char, i) => (

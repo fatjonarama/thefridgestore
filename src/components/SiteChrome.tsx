@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
+import FlyToCart from "@/components/FlyToCart";
 import MobileNav from "@/components/MobileNav";
 import SearchOverlay from "@/components/SearchOverlay";
 import TickerBar from "@/components/TickerBar";
@@ -25,6 +26,7 @@ export default function SiteChrome({ user }: { user: PublicUser | null }) {
         user={user}
       />
       <CartDrawer />
+      <FlyToCart />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} user={user} />
     </>

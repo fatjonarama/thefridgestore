@@ -1,15 +1,42 @@
 @import "tailwindcss";
 
+/* ---- ICE / FROZEN design tokens ----
+   Concept: "hot product, cold storage." Ice blues + frost are the
+   environment; orange is the only warm color and must stay that way
+   (buttons, prices, tags, logo badge) so it pops against the cold. */
 :root {
-  --background: #0d0d0d;
-  --foreground: #f5f5f5;
-  --fridge-orange: #ff5a1f;
+  --bg: #0a0e12;
+  --surface: #10161c;
+  --surface-glass: rgba(180, 220, 255, 0.06);
+  --border-ice: rgba(170, 220, 255, 0.14);
+  --ice-100: #eaf6ff;
+  --ice-300: #a8d8f0;
+  --ice-500: #5bb8e8;
+  --accent: #ff5a1f;
+  --accent-hover: #ff7440;
+  --text-body: #c9d6e0;
+  --text-muted: #7a8a99;
+
+  /* Legacy names kept so every existing bg-background / text-fridge-orange
+     utility across the codebase repaints with the new palette for free. */
+  --background: var(--bg);
+  --foreground: var(--ice-100);
+  --fridge-orange: var(--accent);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-fridge-orange: var(--fridge-orange);
+  --color-fridge-orange-hover: var(--accent-hover);
+  --color-surface: var(--surface);
+  --color-glass: var(--surface-glass);
+  --color-frost: var(--border-ice);
+  --color-ice-100: var(--ice-100);
+  --color-ice-300: var(--ice-300);
+  --color-ice-500: var(--ice-500);
+  --color-body: var(--text-body);
+  --color-muted: var(--text-muted);
   --font-display: var(--font-anton);
   --font-sans: var(--font-inter);
 }
@@ -20,6 +47,79 @@ body {
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
+:focus-visible {
+  outline: 2px solid var(--ice-500);
+  outline-offset: 2px;
+}
+
+/* ---- ice-crystal texture ----
+   Extremely low-opacity fixed noise layer for depth. Kept under a
+   dedicated stacking context so it never sits above text. */
+.ice-texture {
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.66  0 0 0 0 0.85  0 0 0 0 1  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+/* ---- frosted glass ----
+   Base panel treatment for header, cart drawer, modals, toasts, filters.
+   Falls back to a solid surface color when backdrop-filter isn't
+   supported instead of silently losing the panel's contrast. */
+.glass {
+  background: rgba(13, 18, 24, 0.7);
+  border-color: var(--border-ice);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--surface);
+  }
+}
+
+.glass-scrolled {
+  background: rgba(16, 22, 28, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.frost-text {
+  color: var(--ice-100);
+  text-shadow: 0 0 18px rgba(91, 184, 232, 0.35);
+}
+
+.btn-frost-primary {
+  position: relative;
+  isolation: isolate;
+}
+
+.btn-frost-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 55%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.divider-frost {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--border-ice) 50%, transparent);
+}
+
+.temp-badge {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color: var(--ice-500);
+  border: 1px solid var(--border-ice);
+  background: var(--surface-glass);
+}
 
 /* ---- entrance / reveal / ambient motion ----
    Base state is always fully visible with no transform, so JS-less and
@@ -89,21 +189,21 @@ body {
     transform: translateX(-2px);
     text-shadow:
       2px 0 #ff5a1f,
-      -2px 0 #f5f5f5;
+      -2px 0 #eaf6ff;
   }
   35% {
     opacity: 1;
     transform: translateX(2px);
     text-shadow:
       -2px 0 #ff5a1f,
-      2px 0 #f5f5f5;
+      2px 0 #eaf6ff;
   }
   55% {
     opacity: 0.7;
     transform: translateX(-1px);
     text-shadow:
       1px 0 #ff5a1f,
-      -1px 0 #f5f5f5;
+      -1px 0 #eaf6ff;
   }
   80% {
     opacity: 1;
@@ -184,12 +284,183 @@ body {
   }
 }
 
+/* ---- ICE / FROZEN signature effects ---- */
+
+@keyframes cold-light-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes fog-drift-a {
+  0% {
+    transform: translate3d(-6%, 0, 0);
+  }
+  50% {
+    transform: translate3d(4%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-6%, 0, 0);
+  }
+}
+
+@keyframes fog-drift-b {
+  0% {
+    transform: translate3d(5%, 0, 0);
+  }
+  50% {
+    transform: translate3d(-5%, 0, 0);
+  }
+  100% {
+    transform: translate3d(5%, 0, 0);
+  }
+}
+
+@keyframes ice-crack {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.35);
+  }
+  60% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.ice-crack {
+  animation: ice-crack 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes shimmer-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #121a22, #0e1319);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(168, 216, 240, 0.14) 45%,
+    rgba(234, 246, 255, 0.22) 50%,
+    rgba(168, 216, 240, 0.14) 55%,
+    transparent 100%
+  );
+}
+
+@keyframes melt-sink {
+  0%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  50% {
+    transform: scaleY(0.92) translateY(4px);
+  }
+}
+
+@keyframes empty-flake-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(15deg);
+  }
+}
+
+@keyframes snowflake-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes frost-door-open-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes frost-door-open-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes frost-light-spill {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes frost-fog-out {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
 .reveal,
 .hero-in,
 .hero-letter {
   opacity: 1;
   transform: none;
   filter: none;
+}
+
+.fog-layer-a,
+.fog-layer-b {
+  transform: translate3d(0, 0, 0);
+}
+
+.intro-door-left,
+.intro-door-right,
+.intro-light,
+.intro-fog {
+  transform: none;
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -254,5 +525,57 @@ body {
   .reveal-visible {
     opacity: 1;
     transform: none;
+  }
+
+  .cold-light {
+    animation: cold-light-pulse 6s ease-in-out infinite;
+  }
+
+  .fog-layer-a {
+    animation: fog-drift-a 26s ease-in-out infinite;
+  }
+
+  .fog-layer-b {
+    animation: fog-drift-b 34s ease-in-out infinite;
+  }
+
+  .skeleton::after {
+    animation: shimmer-sweep 1.6s ease-in-out infinite;
+  }
+
+  .empty-flake {
+    display: inline-block;
+    animation: empty-flake-float 3s ease-in-out infinite;
+  }
+
+  .melt-icon {
+    display: inline-block;
+    animation: melt-sink 3s ease-in-out infinite;
+  }
+
+  .logo-glyph {
+    transition: transform 0.6s ease;
+  }
+
+  .logo-glyph:hover {
+    animation: snowflake-spin 1.4s linear;
+  }
+
+  .intro-door-left {
+    animation: frost-door-open-left 0.6s 0.15s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+  }
+
+  .intro-door-right {
+    animation: frost-door-open-right 0.6s 0.15s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+  }
+
+  .intro-light {
+    opacity: 0;
+    animation: frost-light-spill 0.7s 0.1s ease-out forwards;
+  }
+
+  .intro-fog {
+    opacity: 0;
+    animation: frost-fog-out 0.9s 0.2s ease-out forwards;
   }
 }

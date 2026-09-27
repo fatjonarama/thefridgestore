@@ -41,17 +41,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             role="status"
-            className={`pointer-events-auto flex items-center gap-2 border px-4 py-3 text-sm shadow-lg transition-all ${
-              t.kind === "success"
-                ? "border-fridge-orange/50 bg-fridge-orange/15 text-fridge-orange"
-                : "border-red-500/50 bg-red-500/15 text-red-400"
+            className={`glass pointer-events-auto flex items-center gap-2 border-l-4 px-4 py-3 text-sm shadow-lg transition-all ${
+              t.kind === "success" ? "border-l-fridge-orange" : "border-l-ice-500"
             }`}
           >
-            <span>{t.kind === "success" ? "✓" : "✕"}</span>
-            <span className="text-white/90">{t.message}</span>
+            <span className={t.kind === "success" ? "text-fridge-orange" : "text-ice-500"}>
+              {t.kind === "success" ? "✓" : "✕"}
+            </span>
+            <span className="text-ice-100">{t.message}</span>
             <button
               onClick={() => dismiss(t.id)}
-              className="ml-2 text-white/40 hover:text-white"
+              className="ml-2 text-muted hover:text-ice-100"
               aria-label="Dismiss"
             >
               ✕

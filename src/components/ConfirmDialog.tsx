@@ -30,14 +30,14 @@ export default function ConfirmDialog({
         onClick={onCancel}
         className="absolute inset-0 bg-black/70"
       />
-      <div className="relative w-full max-w-sm border border-white/15 bg-[#141414] p-6">
-        <h3 className="font-bold tracking-wide">{title}</h3>
-        {description && <p className="mt-2 text-sm text-white/60">{description}</p>}
+      <div className="glass relative w-full max-w-sm border p-6">
+        <h3 className="frost-text font-bold tracking-wide">{title}</h3>
+        {description && <p className="mt-2 text-sm text-muted">{description}</p>}
         <div className="mt-6 flex justify-end gap-3">
           <button
             onClick={onCancel}
             disabled={submitting}
-            className="px-4 py-2 text-sm text-white/70 hover:text-white disabled:opacity-50"
+            className="px-4 py-2 text-sm text-ice-300 hover:text-ice-100 disabled:opacity-50"
           >
             Cancel
           </button>

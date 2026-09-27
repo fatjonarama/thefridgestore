@@ -24,7 +24,7 @@ export default function AmbientGlow() {
       {ORBS.map((orb, i) => (
         <div
           key={i}
-          className={`ambient-blob-${orb.variant} absolute rounded-full bg-fridge-orange`}
+          className={`ambient-blob-${orb.variant} absolute rounded-full bg-ice-500`}
           style={
             {
               top: orb.top,

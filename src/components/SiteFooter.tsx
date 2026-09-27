@@ -8,8 +8,9 @@ export default function SiteFooter() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <footer className="border-t border-white/10">
-      <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-white/40">
+    <footer>
+      <div className="divider-frost" aria-hidden="true" />
+      <div className="mx-auto max-w-7xl px-6 py-8 text-xs text-muted">
         © {new Date().getFullYear()} The Fridge. All rights reserved.
       </div>
     </footer>

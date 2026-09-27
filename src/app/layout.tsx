@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import AmbientGlow from "@/components/AmbientGlow";
+import FridgeIntro from "@/components/FridgeIntro";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
 import { getCurrentUser } from "@/lib/auth";
@@ -33,7 +34,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${anton.variable} ${inter.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-background text-white antialiased">
+      <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
+        <FridgeIntro />
+        <div aria-hidden="true" className="ice-texture" />
         <AmbientGlow />
         <CartProvider>
           <WishlistProvider>

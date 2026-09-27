@@ -15,9 +15,11 @@ function TickerGroup({ hidden }: { hidden?: boolean }) {
   return (
     <div className="flex shrink-0 items-center gap-10 pr-10" aria-hidden={hidden}>
       {REPEATED_MESSAGES.map((msg, i) => (
-        <span key={i} className="flex items-center gap-10 text-xs font-bold tracking-wide">
+        <span key={i} className="flex items-center gap-10 text-xs font-bold tracking-wide text-ice-300">
           {msg}
-          <span className="text-black/40">•</span>
+          <span className="text-fridge-orange" aria-hidden="true">
+            ❄
+          </span>
         </span>
       ))}
     </div>
@@ -26,7 +28,7 @@ function TickerGroup({ hidden }: { hidden?: boolean }) {
 
 export default function TickerBar() {
   return (
-    <div className="ticker-bar overflow-hidden bg-fridge-orange py-2 text-black">
+    <div className="ticker-bar overflow-hidden border-b border-frost bg-surface py-2">
       <div className="marquee-track flex w-max">
         <TickerGroup />
         <TickerGroup hidden />

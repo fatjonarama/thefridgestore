@@ -28,14 +28,14 @@ export default function MobileNav({
         }`}
       />
       <div
-        className={`relative ml-auto flex h-full w-72 max-w-[85vw] flex-col border-l border-white/10 bg-background px-6 py-6 transition-transform duration-200 ease-out ${
+        className={`glass relative ml-auto flex h-full w-72 max-w-[85vw] flex-col border-l px-6 py-6 transition-transform duration-200 ease-out ${
           visible ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <button
           aria-label="Close menu"
           onClick={onClose}
-          className="self-end text-3xl leading-none text-white/60 hover:text-fridge-orange"
+          className="self-end text-3xl leading-none text-ice-300 hover:text-fridge-orange"
         >
           ×
         </button>

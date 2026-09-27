@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -23,14 +24,40 @@ export default function Header({
 }) {
   const { count, openCart } = useCart();
   const { slugs } = useWishlist();
+  const [scrolled, setScrolled] = useState(false);
+  const [cartPulse, setCartPulse] = useState(false);
+  const prevCount = useRef(count);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 8);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (count > prevCount.current) {
+      setCartPulse(true);
+      const timer = setTimeout(() => setCartPulse(false), 500);
+      prevCount.current = count;
+      return () => clearTimeout(timer);
+    }
+    prevCount.current = count;
+  }, [count]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-background/95 backdrop-blur">
+    <header
+      className={`glass sticky top-0 z-30 border-b transition-colors duration-300 ${
+        scrolled ? "glass-scrolled" : ""
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
         <Link href="/" className="flex shrink-0 items-center">
           <span className="whitespace-nowrap font-display text-lg tracking-wide sm:text-2xl">
             THE FR
-            <span className="relative mx-[0.06em] inline-block h-[1.5em] w-[0.8em] -translate-y-[0.12em] align-middle text-fridge-orange">
+            <span className="logo-glyph relative mx-[0.06em] inline-block h-[1.5em] w-[0.8em] -translate-y-[0.12em] align-middle text-fridge-orange">
               <FridgeGlyph />
             </span>
             DGE
@@ -53,21 +80,21 @@ export default function Header({
           <button
             aria-label="Open menu"
             onClick={onMenuClick}
-            className="flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange md:hidden"
+            className="flex h-9 w-9 items-center justify-center border border-frost text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange md:hidden"
           >
             <MenuIcon />
           </button>
           <button
             aria-label="Search"
             onClick={onSearchClick}
-            className="flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
+            className="flex h-9 w-9 items-center justify-center border border-frost text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
           >
             <SearchIcon />
           </button>
           <Link
             href="/wishlist"
             aria-label="Wishlist"
-            className="relative flex h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
+            className="relative flex h-9 w-9 items-center justify-center border border-frost text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
           >
             <HeartIcon />
             {slugs.length > 0 && (
@@ -79,7 +106,7 @@ export default function Header({
           {user?.isAdmin && (
             <Link
               href="/admin"
-              className="hidden text-xs font-bold tracking-wide text-white/40 transition-colors hover:text-fridge-orange sm:inline"
+              className="hidden text-xs font-bold tracking-wide text-muted transition-colors hover:text-fridge-orange sm:inline"
             >
               ADMIN
             </Link>
@@ -87,7 +114,7 @@ export default function Header({
           {user ? (
             <Link
               href="/account"
-              className="hidden h-9 items-center border border-white/15 px-3 text-xs font-bold tracking-wide text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
+              className="hidden h-9 items-center border border-frost px-3 text-xs font-bold tracking-wide text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
             >
               {displayName(user)}
             </Link>
@@ -95,14 +122,17 @@ export default function Header({
             <Link
               href="/account"
               aria-label="Account"
-              className="hidden h-9 w-9 items-center justify-center border border-white/15 text-white/70 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
+              className="hidden h-9 w-9 items-center justify-center border border-frost text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange sm:flex"
             >
               <UserIcon />
             </Link>
           )}
           <button
+            id="cart-anchor"
             onClick={openCart}
-            className="bg-fridge-orange px-3 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:px-4"
+            className={`btn-frost-primary bg-fridge-orange px-3 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:px-4 ${
+              cartPulse ? "ice-crack" : ""
+            }`}
           >
             CART ({count})
           </button>
