@@ -81,7 +81,7 @@ export default function CyclingHero() {
             className="glass inline-flex items-center gap-1.5 border px-5 py-3 text-xs font-bold tracking-wide text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
           >
             <span aria-hidden="true">❄</span>
-            50%
+            −50°C
           </Link>
         </div>
       </div>
