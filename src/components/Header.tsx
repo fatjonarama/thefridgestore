@@ -53,7 +53,7 @@ export default function Header({
         scrolled ? "glass-scrolled" : ""
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center">
           <span className="whitespace-nowrap font-display text-lg tracking-wide sm:text-2xl">
             THE FR
@@ -76,7 +76,7 @@ export default function Header({
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           <button
             aria-label="Open menu"
             onClick={onMenuClick}
