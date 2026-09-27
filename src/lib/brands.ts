@@ -32,6 +32,17 @@ export const BRANDS = [
   "Supreme",
   "Stussy",
   "Carhartt WIP",
+  "Prada",
+  "Philipp Plein",
+  "Hugo Boss",
+  "Louis Vuitton",
+  "Hermès",
+  "Karl Lagerfeld",
+  "Hogan",
+  "Dolce & Gabbana",
+  "Diesel",
+  "Alexander McQueen",
+  "BALR.",
   "Other",
 ] as const;
 
