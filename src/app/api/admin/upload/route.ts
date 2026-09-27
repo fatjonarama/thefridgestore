@@ -26,15 +26,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "File is too large (max 8MB)." }, { status: 400 });
   }
 
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return NextResponse.json(
+      {
+        error:
+          "Vercel Blob isn't connected to this project (missing BLOB_READ_WRITE_TOKEN). Go to the Vercel dashboard → Storage → connect a Blob store, then redeploy — new env vars only take effect on the next deployment.",
+      },
+      { status: 500 },
+    );
+  }
+
   try {
     const blob = await put(`products/${file.name}`, file, {
       access: "public",
       addRandomSuffix: true,
     });
     return NextResponse.json({ url: blob.url });
-  } catch {
+  } catch (err) {
+    console.error("Blob upload failed:", err);
+    const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json(
-      { error: "Upload failed. Is Vercel Blob storage set up for this project?" },
+      { error: `Upload failed: ${message}` },
       { status: 500 },
     );
   }
