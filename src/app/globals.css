@@ -296,30 +296,6 @@ body {
   }
 }
 
-@keyframes fog-drift-a {
-  0% {
-    transform: translate3d(-6%, 0, 0);
-  }
-  50% {
-    transform: translate3d(4%, 0, 0);
-  }
-  100% {
-    transform: translate3d(-6%, 0, 0);
-  }
-}
-
-@keyframes fog-drift-b {
-  0% {
-    transform: translate3d(5%, 0, 0);
-  }
-  50% {
-    transform: translate3d(-5%, 0, 0);
-  }
-  100% {
-    transform: translate3d(5%, 0, 0);
-  }
-}
-
 @keyframes ice-crack {
   0% {
     transform: scale(1);
@@ -450,11 +426,6 @@ body {
   filter: none;
 }
 
-.fog-layer-a,
-.fog-layer-b {
-  transform: translate3d(0, 0, 0);
-}
-
 .intro-door-left,
 .intro-door-right,
 .intro-light,
@@ -529,14 +500,6 @@ body {
 
   .cold-light {
     animation: cold-light-pulse 6s ease-in-out infinite;
-  }
-
-  .fog-layer-a {
-    animation: fog-drift-a 26s ease-in-out infinite;
-  }
-
-  .fog-layer-b {
-    animation: fog-drift-b 34s ease-in-out infinite;
   }
 
   .skeleton::after {

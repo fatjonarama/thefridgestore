@@ -26,11 +26,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "File is too large (max 8MB)." }, { status: 400 });
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID) {
     return NextResponse.json(
       {
         error:
-          "Vercel Blob isn't connected to this project (missing BLOB_READ_WRITE_TOKEN). Go to the Vercel dashboard → Storage → connect a Blob store, then redeploy — new env vars only take effect on the next deployment.",
+          "Vercel Blob isn't connected to this project. Go to the Vercel dashboard → Storage → connect a Blob store, then redeploy — new env vars only take effect on the next deployment.",
       },
       { status: 500 },
     );
