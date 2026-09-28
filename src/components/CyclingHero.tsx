@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import HeroLine from "@/components/HeroLine";
 
@@ -19,6 +20,7 @@ const LINE_PAUSE_MS = 150;
 const LETTER_DURATION_MS = 500;
 const CYCLE_MS = 3600;
 const GLITCH_DURATION_MS = 180;
+const SWIPE_THRESHOLD_PX = 40;
 
 function lineStartDelays(lines: string[]) {
   const delays: number[] = [];
@@ -30,8 +32,9 @@ function lineStartDelays(lines: string[]) {
   return delays;
 }
 
-export default function CyclingHero() {
+export default function CyclingHero({ featuredImage }: { featuredImage?: string }) {
   const [index, setIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -39,6 +42,18 @@ export default function CyclingHero() {
     }, CYCLE_MS);
     return () => clearInterval(timer);
   }, []);
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < SWIPE_THRESHOLD_PX) return;
+    setIndex((i) => (dx < 0 ? (i + 1) % PHRASES.length : (i - 1 + PHRASES.length) % PHRASES.length));
+  }
 
   const phrase = PHRASES[index];
   const delays = lineStartDelays(phrase.lines);
@@ -50,11 +65,11 @@ export default function CyclingHero() {
   const pulseDelay = Math.max(glitchDelay + GLITCH_DURATION_MS, settleDelay) + 100;
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <div className="relative">
         <h1
           key={index}
-          className="frost-text font-display text-6xl leading-[1.08] tracking-wide sm:text-7xl"
+          className="frost-text font-display text-[clamp(2rem,8vw,4.5rem)] leading-[1.08] tracking-wide md:text-7xl"
         >
           {phrase.lines.map((line, i) => (
             <HeroLine
@@ -72,18 +87,49 @@ export default function CyclingHero() {
         >
           <Link
             href="/shop"
-            className="btn-frost-primary inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03]"
+            className="btn-frost-primary inline-flex h-14 items-center justify-center bg-fridge-orange px-8 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:hover:scale-[1.03] md:inline-block md:h-auto md:py-4"
           >
             SHOP THE DROP
           </Link>
           <Link
             href="/shop?sale=true"
-            className="glass inline-flex items-center gap-1.5 border px-5 py-3 text-xs font-bold tracking-wide text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
+            className="glass inline-flex h-14 items-center gap-1.5 border px-5 text-xs font-bold text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange md:h-auto md:py-3 md:tracking-wide"
           >
             <span aria-hidden="true">❄</span>
             −50°C
           </Link>
         </div>
+
+        <div className="mt-6 flex items-center gap-2 md:hidden">
+          {PHRASES.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Show phrase ${i + 1}`}
+              aria-current={i === index}
+              onClick={() => setIndex(i)}
+              className={`h-2.5 rounded-full transition-all ${
+                i === index ? "w-6 bg-fridge-orange" : "w-2.5 bg-white/25"
+              }`}
+            />
+          ))}
+        </div>
+
+        {featuredImage && (
+          <div className="relative mt-8 flex justify-center md:hidden">
+            <span
+              aria-hidden="true"
+              className="glow-pulse pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(91,184,232,0.4),transparent)] opacity-70 blur-2xl"
+            />
+            <Image
+              src={featuredImage}
+              alt=""
+              width={220}
+              height={220}
+              className="relative h-auto w-44 object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

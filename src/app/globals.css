@@ -448,6 +448,18 @@ body {
   }
 }
 
+@keyframes mobile-door-tap {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* prefers-reduced-motion still gets a splash, just a short plain fade
    over the static "settled" artwork above (closed doors, dim light-leak,
    glyph) instead of the full door-split/fog sequence, which stays off
@@ -648,6 +660,24 @@ body {
     color: var(--fridge-orange);
     -webkit-text-stroke: 1px transparent;
   }
+
+  .fridge-door-mobile.tap-open {
+    animation: mobile-door-tap 220ms ease-out;
+  }
+
+  .fridge-door-mobile.tap-open .fridge-door-mobile-light {
+    opacity: 1;
+    transition: opacity 150ms ease;
+  }
+}
+
+/* Tap always flashes the word orange immediately, reduced-motion or not —
+   a color swap isn't the kind of motion that preference opts out of, and
+   under reduced motion the router.push fires with no delay (see
+   FridgeDoor.tsx), so this is the only "door opened" feedback shown. */
+.fridge-door-mobile.tap-open .fridge-door-mobile-word {
+  color: var(--fridge-orange);
+  -webkit-text-stroke: 1px transparent;
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {

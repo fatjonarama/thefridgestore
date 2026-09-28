@@ -2,19 +2,26 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Audience } from "@/lib/audience";
+
+const TAP_OPEN_MS = 220;
 
 export default function FridgeDoor({
   audience,
   side,
   label,
+  count,
 }: {
   audience: Audience;
   side: "left" | "right";
   label: string;
+  count: number;
 }) {
+  const router = useRouter();
   const mobileRef = useRef<HTMLAnchorElement>(null);
   const [mobileInView, setMobileInView] = useState(false);
+  const [tapOpen, setTapOpen] = useState(false);
 
   useEffect(() => {
     const el = mobileRef.current;
@@ -36,11 +43,21 @@ export default function FridgeDoor({
   const doorOrigin = side === "left" ? "origin-left" : "origin-right";
   const handleSide = side === "left" ? "right-3" : "left-3";
   const lightSide = side === "left" ? "right-0" : "left-0";
+  const href = `/shop?audience=${audience}`;
+  const pairsLabel = `${count} ${count === 1 ? "PAIR" : "PAIRS"}`;
+
+  function handleMobileTap(e: React.MouseEvent) {
+    e.preventDefault();
+    if (tapOpen) return; // already animating, ignore repeat taps
+    setTapOpen(true);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(() => router.push(href), reducedMotion ? 0 : TAP_OPEN_MS);
+  }
 
   return (
     <>
       <Link
-        href={`/shop?audience=${audience}`}
+        href={href}
         className={`fridge-door fridge-door-${side} group relative h-[380px] [perspective:1600px]`}
       >
         <span className="absolute inset-0 rounded-2xl border border-frost bg-[radial-gradient(80%_60%_at_50%_100%,rgba(91,184,232,0.22),var(--surface)_75%)]" />
@@ -77,28 +94,31 @@ export default function FridgeDoor({
 
       <Link
         ref={mobileRef}
-        href={`/shop?audience=${audience}`}
-        className={`fridge-door-mobile group relative block min-h-[190px] overflow-hidden rounded-2xl border border-frost bg-glass p-5 ${
+        href={href}
+        onClick={handleMobileTap}
+        aria-label={`${label} — ${pairsLabel}`}
+        className={`fridge-door-mobile group relative block min-h-[300px] overflow-hidden rounded-2xl border border-frost bg-glass p-3 ${
           mobileInView ? "in-view" : ""
-        }`}
+        } ${tapOpen ? "tap-open" : ""}`}
       >
         <span className="ice-grain pointer-events-none absolute inset-0" />
 
-        <span className="pointer-events-none absolute right-4 top-3 font-mono text-[10px] tracking-wide text-ice-500">
+        <span className="pointer-events-none absolute right-3 top-3 font-mono text-[10px] text-ice-500">
           −4°C
         </span>
 
         <span
-          className={`pointer-events-none absolute bottom-4 top-9 ${handleSide} w-1.5 rounded-full bg-[linear-gradient(90deg,#7c8a97,#eef3f6,#7c8a97)]`}
+          className={`fridge-door-mobile-handle pointer-events-none absolute bottom-4 top-9 ${handleSide} w-1.5 rounded-full bg-[linear-gradient(90deg,#7c8a97,#eef3f6,#7c8a97)]`}
         />
         <span
-          className={`glow-pulse pointer-events-none absolute inset-y-0 ${lightSide} w-16 opacity-40 bg-[radial-gradient(closest-side,rgba(91,184,232,0.5),transparent)]`}
+          className={`fridge-door-mobile-light glow-pulse pointer-events-none absolute inset-y-0 ${lightSide} w-14 opacity-40 bg-[radial-gradient(closest-side,rgba(91,184,232,0.5),transparent)]`}
         />
 
-        <span className="relative flex min-h-[142px] flex-col items-center justify-center text-center">
-          <span className="fridge-door-mobile-word font-display text-3xl tracking-wide">
+        <span className="relative flex min-h-[264px] flex-col items-center justify-center gap-2 text-center">
+          <span className="fridge-door-mobile-word font-display text-2xl tracking-wide">
             {label.toUpperCase()}
           </span>
+          <span className="text-[11px] font-semibold tracking-wide text-ice-300">{pairsLabel}</span>
         </span>
       </Link>
     </>
