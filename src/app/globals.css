@@ -130,15 +130,6 @@ body {
   }
 }
 
-@keyframes stripe-drift {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 56px 56px;
-  }
-}
-
 @keyframes glow-pulse {
   0%,
   100% {
@@ -484,10 +475,6 @@ body {
     animation-iteration-count: 1, infinite;
     animation-fill-mode: forwards, none;
     animation-delay: var(--glitch-delay, 0ms), var(--pulse-delay, 0ms);
-  }
-
-  .stripe-drift {
-    animation: stripe-drift 7s linear infinite;
   }
 
   .glow-pulse {

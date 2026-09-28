@@ -1,12 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
 import HeroCarousel from "@/components/HeroCarousel";
-import Placeholder from "@/components/Placeholder";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import { getFreshDrops } from "@/db/queries";
-import { AUDIENCES, AUDIENCE_LABELS } from "@/lib/audience";
+import { AUDIENCES, AUDIENCE_LABELS, type Audience } from "@/lib/audience";
 
 export const dynamic = "force-dynamic";
+
+const AUDIENCE_IMAGES: Partial<Record<Audience, string>> = {
+  men: "/shop-by/men.webp",
+  women: "/shop-by/women.png",
+};
 
 export default async function Home() {
   const freshDrops = await getFreshDrops(3);
@@ -23,8 +28,18 @@ export default async function Home() {
           {AUDIENCES.map((audience, i) => (
             <Reveal key={audience} delay={i * 100}>
               <Link href={`/shop?audience=${audience}`} className="group block">
-                <div className="aspect-[4/3] w-full overflow-hidden">
-                  <Placeholder className="stripe-drift h-full w-full transition-transform duration-500 ease-out group-hover:scale-105" />
+                <div className="relative aspect-[4/3] w-full overflow-hidden border border-frost bg-glass">
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 [background:radial-gradient(60%_60%_at_50%_100%,rgba(91,184,232,0.18),transparent_70%)]"
+                  />
+                  <Image
+                    src={AUDIENCE_IMAGES[audience] ?? ""}
+                    alt=""
+                    fill
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                    className="object-contain object-bottom p-4 transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
                 </div>
                 <p className="mt-3 text-sm font-bold tracking-wide transition-colors group-hover:text-fridge-orange">
                   {AUDIENCE_LABELS[audience].toUpperCase()}
