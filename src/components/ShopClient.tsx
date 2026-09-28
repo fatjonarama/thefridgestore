@@ -207,7 +207,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
           {filtered.length === 0 ? (
             <p className="text-sm text-muted">No products match these filters.</p>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 md:gap-6 xl:grid-cols-3">
               {filtered.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
