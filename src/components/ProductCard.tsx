@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Placeholder from "@/components/Placeholder";
@@ -59,7 +60,7 @@ export default function ProductCard({ product }: { product: ProductRow }) {
   }
 
   return (
-    <div className="group relative flex flex-col overflow-hidden border border-frost bg-glass transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-fridge-orange hover:shadow-[0_20px_45px_-16px_rgba(91,184,232,0.4)]">
+    <div className="group relative flex flex-col overflow-hidden border border-frost bg-glass transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-fridge-orange md:hover:shadow-[0_20px_45px_-16px_rgba(91,184,232,0.4)]">
       <div className="absolute right-2 top-2 z-10 flex flex-col gap-2">
         <button
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -95,18 +96,22 @@ export default function ProductCard({ product }: { product: ProductRow }) {
         <div className="relative h-full w-full transition-transform duration-500 ease-out group-hover:scale-105">
           {product.images.length > 0 ? (
             <>
-              <img
+              <Image
                 src={product.images[0]}
                 alt=""
+                fill
                 loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover"
+                sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
+                className="object-cover"
               />
               {product.images[1] && (
-                <img
+                <Image
                   src={product.images[1]}
                   alt=""
+                  fill
                   loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
+                  className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
               )}
             </>

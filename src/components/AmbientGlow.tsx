@@ -20,7 +20,7 @@ const ORBS: Orb[] = [
 
 export default function AmbientGlow() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 hidden overflow-hidden md:block">
       {ORBS.map((orb, i) => (
         <div
           key={i}

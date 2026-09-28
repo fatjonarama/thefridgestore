@@ -689,3 +689,48 @@ body {
     transition: none !important;
   }
 }
+
+/* ---- mobile performance pass ----
+   backdrop-filter blur is the single most expensive thing a mid-range
+   phone can be asked to composite every scroll frame, especially under a
+   sticky/fixed element or repeated inside a scrolling grid (product
+   badges). Below md, every .glass surface swaps to a solid tint instead —
+   visually close, effectively free to paint. Desktop (md and up) keeps
+   the real blur untouched. */
+@media (max-width: 767px) {
+  .glass,
+  .glass-scrolled {
+    background: rgba(10, 14, 18, 0.92);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* Cheap static replacement for the desktop AmbientGlow blur orbs —
+     plain gradient stops, no filter, no animation. */
+  body {
+    background:
+      radial-gradient(55% 38% at 18% 8%, rgba(91, 184, 232, 0.08), transparent 70%),
+      radial-gradient(50% 34% at 88% 72%, rgba(91, 184, 232, 0.06), transparent 70%),
+      var(--background);
+  }
+
+  .frost-text {
+    text-shadow: 0 0 6px rgba(91, 184, 232, 0.25);
+  }
+}
+
+/* Keep the one-shot letter-landing glitch; drop the infinite 5s
+   text-shadow + filter pulse loop (filter animates outside the
+   compositor, so it repaints every frame it runs). Scoped to
+   no-preference too, same as the rule it overrides — a reduced-motion
+   visitor gets no animation here at all, on any viewport. */
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .hero-line-fresh-fx {
+    animation-name: glitch-flicker;
+    animation-duration: 0.18s;
+    animation-timing-function: steps(3, jump-none);
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-delay: var(--glitch-delay, 0ms);
+  }
+}

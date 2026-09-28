@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Placeholder from "@/components/Placeholder";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -23,10 +24,13 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
       <div>
         <div className="relative aspect-square w-full overflow-hidden">
           {hasImages ? (
-            <img
+            <Image
               src={product.images[activeImage]}
               alt={product.name}
-              className="h-full w-full object-cover"
+              fill
+              priority
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
             />
           ) : (
             <Placeholder className="h-full w-full" />
@@ -49,11 +53,11 @@ export default function ProductDetail({ product }: { product: ProductRow }) {
                 key={src}
                 onClick={() => setActiveImage(i)}
                 aria-label={`View photo ${i + 1}`}
-                className={`h-16 w-16 overflow-hidden border ${
+                className={`relative h-16 w-16 overflow-hidden border ${
                   i === activeImage ? "border-fridge-orange" : "border-frost"
                 }`}
               >
-                <img src={src} alt="" className="h-full w-full object-cover" />
+                <Image src={src} alt="" fill sizes="64px" className="object-cover" />
               </button>
             ))}
           </div>

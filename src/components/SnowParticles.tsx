@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 
 const MAX_PARTICLES = 40;
-const MAX_PARTICLES_MOBILE = 16;
 
 export default function SnowParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -12,6 +11,7 @@ export default function SnowParticles() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(max-width: 767px)").matches) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -29,8 +29,7 @@ export default function SnowParticles() {
     }
     resize();
 
-    const count = width < 480 ? MAX_PARTICLES_MOBILE : MAX_PARTICLES;
-    const particles = Array.from({ length: count }).map(() => ({
+    const particles = Array.from({ length: MAX_PARTICLES }).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
       r: 0.6 + Math.random() * 1.5,
