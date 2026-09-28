@@ -25,12 +25,25 @@ export default function Header({
   const { count, openCart } = useCart();
   const { slugs } = useWishlist();
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [cartPulse, setCartPulse] = useState(false);
   const prevCount = useRef(count);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     function onScroll() {
-      setScrolled(window.scrollY > 8);
+      const y = window.scrollY;
+      setScrolled(y > 8);
+
+      // Hide-on-scroll-down is a small-screen space-saving move — desktop
+      // keeps the header pinned regardless of scroll direction.
+      if (window.innerWidth < 768) {
+        const goingDown = y > lastScrollY.current;
+        setHidden(goingDown && y > 80);
+      } else {
+        setHidden(false);
+      }
+      lastScrollY.current = y;
     }
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -49,11 +62,11 @@ export default function Header({
 
   return (
     <header
-      className={`glass sticky top-0 z-30 transition-colors duration-300 ${
+      className={`glass sticky top-0 z-30 pt-[env(safe-area-inset-top)] transition-[background-color,transform] duration-300 ${
         scrolled ? "glass-scrolled" : ""
-      }`}
+      } ${hidden ? "-translate-y-full" : "translate-y-0"}`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-[6px] sm:px-6 md:py-4">
         <Link href="/" className="flex shrink-0 items-center">
           <span className="whitespace-nowrap font-display text-lg tracking-wide sm:text-2xl">
             THE FR
@@ -80,25 +93,25 @@ export default function Header({
           <button
             aria-label="Open menu"
             onClick={onMenuClick}
-            className="flex h-9 w-9 items-center justify-center border border-frost text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange md:hidden"
+            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:hidden"
           >
             <MenuIcon />
           </button>
           <button
             aria-label="Search"
             onClick={onSearchClick}
-            className="flex h-9 w-9 items-center justify-center border border-frost text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
+            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:h-9 md:w-9 md:border md:border-frost md:hover:border-fridge-orange"
           >
             <SearchIcon />
           </button>
           <Link
             href="/wishlist"
             aria-label="Wishlist"
-            className="relative flex h-9 w-9 items-center justify-center border border-frost text-ice-300 transition-colors hover:border-fridge-orange hover:text-fridge-orange"
+            className="relative flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:h-9 md:w-9 md:border md:border-frost md:hover:border-fridge-orange"
           >
             <HeartIcon />
             {slugs.length > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center bg-fridge-orange px-1 text-[10px] font-bold text-black">
+              <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center bg-fridge-orange px-1 text-[10px] font-bold text-black md:-right-1.5 md:-top-1.5">
                 {slugs.length}
               </span>
             )}
@@ -128,9 +141,24 @@ export default function Header({
             </Link>
           )}
           <button
-            id="cart-anchor"
+            data-cart-anchor
+            aria-label={`Cart (${count})`}
             onClick={openCart}
-            className={`btn-frost-primary bg-fridge-orange px-3 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:px-4 ${
+            className={`relative flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:hidden ${
+              cartPulse ? "ice-crack" : ""
+            }`}
+          >
+            <CartIcon />
+            {count > 0 && (
+              <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center bg-fridge-orange px-1 text-[10px] font-bold text-black">
+                {count}
+              </span>
+            )}
+          </button>
+          <button
+            data-cart-anchor
+            onClick={openCart}
+            className={`btn-frost-primary hidden bg-fridge-orange px-3 py-2 text-sm font-bold tracking-wide text-black transition-transform duration-200 hover:brightness-110 active:scale-95 sm:px-4 md:inline-block ${
               cartPulse ? "ice-crack" : ""
             }`}
           >
@@ -164,6 +192,16 @@ function HeartIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
+    </svg>
+  );
+}
+
+function CartIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="9" cy="21" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="21" r="1.5" fill="currentColor" stroke="none" />
+      <path d="M2.5 3h2l2.4 12.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21.5 7H6" />
     </svg>
   );
 }

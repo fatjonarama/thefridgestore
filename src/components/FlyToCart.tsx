@@ -14,7 +14,11 @@ export default function FlyToCart() {
       if (!detail || !root) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const target = document.getElementById("cart-anchor");
+      // Two cart controls exist (compact icon on mobile, wide button on
+      // desktop) and only one is ever laid out at a time — pick whichever
+      // has an offsetParent (i.e. isn't display:none).
+      const anchors = document.querySelectorAll<HTMLElement>("[data-cart-anchor]");
+      const target = [...anchors].find((el) => el.offsetParent !== null) ?? anchors[0];
       if (!target) return;
       const targetRect = target.getBoundingClientRect();
 
