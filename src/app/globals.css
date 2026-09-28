@@ -367,29 +367,42 @@ body {
   }
 }
 
-@keyframes frost-door-open-left {
-  from {
+/* ---- fridge-door intro ----
+   All phases share one duration (--intro-total, set inline from
+   INTRO_TIMING.TOTAL_MS in FridgeIntro.tsx) so the percentages below scale
+   together if the total is tweaked. At the default 2500ms: 20% = 500ms
+   (hold ends), 48% = 1200ms (fog starts), 64% = 1600ms (doors fully open). */
+
+@keyframes intro-door-open-left {
+  0%,
+  20% {
     transform: translateX(0);
   }
-  to {
+  64%,
+  100% {
     transform: translateX(-100%);
   }
 }
 
-@keyframes frost-door-open-right {
-  from {
+@keyframes intro-door-open-right {
+  0%,
+  20% {
     transform: translateX(0);
   }
-  to {
+  64%,
+  100% {
     transform: translateX(100%);
   }
 }
 
-@keyframes frost-light-spill {
+@keyframes intro-light-leak {
   0% {
-    opacity: 0;
+    opacity: 0.12;
   }
-  40% {
+  20% {
+    opacity: 0.4;
+  }
+  64% {
     opacity: 1;
   }
   100% {
@@ -397,17 +410,30 @@ body {
   }
 }
 
-@keyframes frost-fog-out {
-  0% {
+@keyframes intro-fog-roll {
+  0%,
+  48% {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.8);
   }
-  30% {
-    opacity: 0.9;
+  60% {
+    opacity: 0.85;
+    transform: scale(1.1);
   }
   100% {
     opacity: 0;
-    transform: scale(1.4);
+    transform: scale(1.7);
+  }
+}
+
+@keyframes intro-glyph-fade {
+  0%,
+  20% {
+    opacity: 0.9;
+  }
+  55%,
+  100% {
+    opacity: 0;
   }
 }
 
@@ -420,11 +446,20 @@ body {
 }
 
 .intro-door-left,
-.intro-door-right,
-.intro-light,
-.intro-fog {
+.intro-door-right {
   transform: none;
-  opacity: 1;
+}
+
+.intro-light-leak {
+  opacity: 0.3;
+}
+
+.intro-fog {
+  opacity: 0;
+}
+
+.intro-glyph {
+  opacity: 0.9;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -518,20 +553,25 @@ body {
   }
 
   .intro-door-left {
-    animation: frost-door-open-left 0.6s 0.15s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+    animation: intro-door-open-left var(--intro-total, 2500ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   .intro-door-right {
-    animation: frost-door-open-right 0.6s 0.15s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+    animation: intro-door-open-right var(--intro-total, 2500ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  .intro-light {
+  .intro-light-leak {
     opacity: 0;
-    animation: frost-light-spill 0.7s 0.1s ease-out forwards;
+    animation: intro-light-leak var(--intro-total, 2500ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   .intro-fog {
     opacity: 0;
-    animation: frost-fog-out 0.9s 0.2s ease-out forwards;
+    animation: intro-fog-roll var(--intro-total, 2500ms) ease-out forwards;
+  }
+
+  .intro-glyph {
+    opacity: 0;
+    animation: intro-glyph-fade var(--intro-total, 2500ms) ease-out forwards;
   }
 }
