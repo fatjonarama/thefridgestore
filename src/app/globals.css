@@ -463,7 +463,31 @@ body {
 }
 
 /* ---- fridge doors (SHOP BY) ----
-   Base state is the final, already-open-to-view appearance for JS-less
+   Which of the two variants renders is decided by input capability, not
+   viewport width — a touch tablet (iPad, no fine pointer) gets the
+   scroll-triggered mobile card even at a "desktop" width, and a mouse/
+   trackpad-driven device gets the hover-swing door even at a narrow
+   width. This is more reliable than a width breakpoint for tablets that
+   fall on either side of it. */
+.fridge-door {
+  display: none;
+}
+
+.fridge-door-mobile {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fridge-door {
+    display: block;
+  }
+
+  .fridge-door-mobile {
+    display: none;
+  }
+}
+
+/* Base state is the final, already-open-to-view appearance for JS-less
    and reduced-motion visitors: doors closed flat, label readable, shelf
    visible, no faded overlays. Hover/focus swing (desktop) and the
    scroll-triggered fill (mobile) live in the media queries below. */
