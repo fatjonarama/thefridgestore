@@ -504,18 +504,8 @@ body {
   opacity: 0;
 }
 
-.fridge-door-shelf-item {
-  opacity: 1;
-  transform: none;
-}
-
 .fridge-door-mobile-word {
   color: var(--fridge-orange);
-}
-
-.fridge-door-mobile-product {
-  opacity: 1;
-  transform: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -637,19 +627,6 @@ body {
     color: var(--fridge-orange);
     -webkit-text-stroke: 1px transparent;
   }
-
-  .fridge-door-mobile-product {
-    opacity: 0;
-    transform: translateY(16px);
-    transition:
-      opacity 0.6s ease,
-      transform 0.6s ease;
-  }
-
-  .fridge-door-mobile.in-view .fridge-door-mobile-product {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -690,21 +667,6 @@ body {
   .fridge-door:focus-visible .fridge-door-fog {
     opacity: 1;
   }
-
-  .fridge-door-shelf-item {
-    opacity: 0;
-    transform: translateY(16px);
-    transition:
-      opacity 0.4s ease,
-      transform 0.4s ease;
-    transition-delay: var(--shelf-delay, 0ms);
-  }
-
-  .fridge-door:hover .fridge-door-shelf-item,
-  .fridge-door:focus-visible .fridge-door-shelf-item {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -723,9 +685,7 @@ body {
   .fridge-door-open-label,
   .fridge-door-light,
   .fridge-door-fog,
-  .fridge-door-shelf-item,
-  .fridge-door-mobile-word,
-  .fridge-door-mobile-product {
+  .fridge-door-mobile-word {
     transition: none !important;
   }
 }

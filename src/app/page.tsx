@@ -10,8 +10,6 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const activeProducts = await getActiveProducts();
   const freshDrops = activeProducts.filter((p) => p.isNew).slice(0, 3);
-  const menProducts = activeProducts.filter((p) => p.audience === "men");
-  const womenProducts = activeProducts.filter((p) => p.audience === "women");
 
   return (
     <main className="flex-1">
@@ -22,20 +20,8 @@ export default async function Home() {
       <section className="mx-auto max-w-7xl px-6 py-12">
         <h2 className="font-display text-2xl tracking-wide">SHOP BY</h2>
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <FridgeDoor
-            audience="men"
-            side="left"
-            label={AUDIENCE_LABELS.men}
-            count={menProducts.length}
-            products={menProducts}
-          />
-          <FridgeDoor
-            audience="women"
-            side="right"
-            label={AUDIENCE_LABELS.women}
-            count={womenProducts.length}
-            products={womenProducts}
-          />
+          <FridgeDoor audience="men" side="left" label={AUDIENCE_LABELS.men} />
+          <FridgeDoor audience="women" side="right" label={AUDIENCE_LABELS.women} />
         </div>
       </section>
 
