@@ -437,6 +437,27 @@ body {
   }
 }
 
+@keyframes intro-simple-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  12%,
+  82% {
+    opacity: 1;
+  }
+}
+
+/* prefers-reduced-motion still gets a splash, just a short plain fade
+   over the static "settled" artwork above (closed doors, dim light-leak,
+   glyph) instead of the full door-split/fog sequence, which stays off
+   here since it's only ever defined inside the no-preference query. */
+@media (prefers-reduced-motion: reduce) {
+  .fridge-intro-root {
+    animation: intro-simple-fade var(--intro-total, 700ms) ease-in-out forwards;
+  }
+}
+
 .reveal,
 .hero-in,
 .hero-letter {
