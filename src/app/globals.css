@@ -66,6 +66,15 @@ body {
   background-size: 240px 240px;
 }
 
+/* Non-fixed variant of the same noise pattern, for layering onto a
+   specific element (fridge doors) instead of the whole viewport. */
+.ice-grain {
+  opacity: 0.06;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.66  0 0 0 0 0.85  0 0 0 0 1  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
 /* ---- frosted glass ----
    Base panel treatment for header, cart drawer, modals, toasts, filters.
    Falls back to a solid surface color when backdrop-filter isn't
@@ -453,6 +462,38 @@ body {
   opacity: 0.9;
 }
 
+/* ---- fridge doors (SHOP BY) ----
+   Base state is the final, already-open-to-view appearance for JS-less
+   and reduced-motion visitors: doors closed flat, label readable, shelf
+   visible, no faded overlays. Hover/focus swing (desktop) and the
+   scroll-triggered fill (mobile) live in the media queries below. */
+.fridge-door-panel {
+  transform: none;
+}
+
+.fridge-door-open-label {
+  opacity: 0;
+}
+
+.fridge-door-light,
+.fridge-door-fog {
+  opacity: 0;
+}
+
+.fridge-door-shelf-item {
+  opacity: 1;
+  transform: none;
+}
+
+.fridge-door-mobile-word {
+  color: var(--fridge-orange);
+}
+
+.fridge-door-mobile-product {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .hero-in {
     opacity: 0;
@@ -560,5 +601,107 @@ body {
   .intro-glyph {
     opacity: 0;
     animation: intro-glyph-fade var(--intro-total, 2500ms) ease-out forwards;
+  }
+
+  .fridge-door-mobile-word {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ice-100);
+    transition: color 0.6s ease;
+  }
+
+  .fridge-door-mobile.in-view .fridge-door-mobile-word {
+    color: var(--fridge-orange);
+    -webkit-text-stroke: 1px transparent;
+  }
+
+  .fridge-door-mobile-product {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+  }
+
+  .fridge-door-mobile.in-view .fridge-door-mobile-product {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .fridge-door-panel {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .fridge-door-left:hover .fridge-door-panel,
+  .fridge-door-left:focus-visible .fridge-door-panel {
+    transform: rotateY(-25deg);
+  }
+
+  .fridge-door-right:hover .fridge-door-panel,
+  .fridge-door-right:focus-visible .fridge-door-panel {
+    transform: rotateY(25deg);
+  }
+
+  .fridge-door-label,
+  .fridge-door-open-label,
+  .fridge-door-light,
+  .fridge-door-fog {
+    transition: opacity 0.4s ease;
+  }
+
+  .fridge-door:hover .fridge-door-label,
+  .fridge-door:focus-visible .fridge-door-label {
+    opacity: 0;
+  }
+
+  .fridge-door:hover .fridge-door-open-label,
+  .fridge-door:focus-visible .fridge-door-open-label {
+    opacity: 1;
+  }
+
+  .fridge-door:hover .fridge-door-light,
+  .fridge-door:focus-visible .fridge-door-light,
+  .fridge-door:hover .fridge-door-fog,
+  .fridge-door:focus-visible .fridge-door-fog {
+    opacity: 1;
+  }
+
+  .fridge-door-shelf-item {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s ease;
+    transition-delay: var(--shelf-delay, 0ms);
+  }
+
+  .fridge-door:hover .fridge-door-shelf-item,
+  .fridge-door:focus-visible .fridge-door-shelf-item {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fridge-door-left .fridge-door-panel {
+    transform: rotateY(-8deg);
+    transform-origin: left center;
+  }
+
+  .fridge-door-right .fridge-door-panel {
+    transform: rotateY(8deg);
+    transform-origin: right center;
+  }
+
+  .fridge-door-panel,
+  .fridge-door-label,
+  .fridge-door-open-label,
+  .fridge-door-light,
+  .fridge-door-fog,
+  .fridge-door-shelf-item,
+  .fridge-door-mobile-word,
+  .fridge-door-mobile-product {
+    transition: none !important;
   }
 }

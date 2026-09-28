@@ -1,20 +1,17 @@
-import Image from "next/image";
-import Link from "next/link";
 import HeroCarousel from "@/components/HeroCarousel";
+import FridgeDoor from "@/components/FridgeDoor";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
-import { getFreshDrops } from "@/db/queries";
-import { AUDIENCES, AUDIENCE_LABELS, type Audience } from "@/lib/audience";
+import { getActiveProducts } from "@/db/queries";
+import { AUDIENCE_LABELS } from "@/lib/audience";
 
 export const dynamic = "force-dynamic";
 
-const AUDIENCE_IMAGES: Partial<Record<Audience, string>> = {
-  men: "/shop-by/men.webp",
-  women: "/shop-by/women.png",
-};
-
 export default async function Home() {
-  const freshDrops = await getFreshDrops(3);
+  const activeProducts = await getActiveProducts();
+  const freshDrops = activeProducts.filter((p) => p.isNew).slice(0, 3);
+  const menProducts = activeProducts.filter((p) => p.audience === "men");
+  const womenProducts = activeProducts.filter((p) => p.audience === "women");
 
   return (
     <main className="flex-1">
@@ -24,29 +21,21 @@ export default async function Home() {
 
       <section className="mx-auto max-w-7xl px-6 py-12">
         <h2 className="font-display text-2xl tracking-wide">SHOP BY</h2>
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {AUDIENCES.map((audience, i) => (
-            <Reveal key={audience} delay={i * 100}>
-              <Link href={`/shop?audience=${audience}`} className="group block">
-                <div className="relative aspect-[4/3] w-full overflow-hidden border border-frost bg-glass">
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 [background:radial-gradient(60%_60%_at_50%_100%,rgba(91,184,232,0.18),transparent_70%)]"
-                  />
-                  <Image
-                    src={AUDIENCE_IMAGES[audience] ?? ""}
-                    alt=""
-                    fill
-                    sizes="(min-width: 640px) 50vw, 100vw"
-                    className="object-contain object-bottom p-4 transition-transform duration-500 ease-out group-hover:scale-105"
-                  />
-                </div>
-                <p className="mt-3 text-sm font-bold tracking-wide transition-colors group-hover:text-fridge-orange">
-                  {AUDIENCE_LABELS[audience].toUpperCase()}
-                </p>
-              </Link>
-            </Reveal>
-          ))}
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <FridgeDoor
+            audience="men"
+            side="left"
+            label={AUDIENCE_LABELS.men}
+            count={menProducts.length}
+            products={menProducts}
+          />
+          <FridgeDoor
+            audience="women"
+            side="right"
+            label={AUDIENCE_LABELS.women}
+            count={womenProducts.length}
+            products={womenProducts}
+          />
         </div>
       </section>
 
