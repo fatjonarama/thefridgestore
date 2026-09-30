@@ -496,12 +496,13 @@ body {
 }
 
 /* ---- fridge doors (SHOP BY) ----
-   Which of the two variants renders is decided by input capability, not
-   viewport width — a touch tablet (iPad, no fine pointer) gets the
-   scroll-triggered mobile card even at a "desktop" width, and a mouse/
-   trackpad-driven device gets the hover-swing door even at a narrow
-   width. This is more reliable than a width breakpoint for tablets that
-   fall on either side of it. */
+   Which of the two variants renders is decided by input capability (a
+   touch tablet gets the scroll-triggered mobile card even at a "desktop"
+   width, a mouse/trackpad device gets the hover-swing door), but gated
+   behind a min-width floor too: some real phones' WebKit builds
+   misreport (hover: hover)/(pointer: fine) as true on a touchscreen, so
+   without the width floor they'd wrongly get the desktop door. Anything
+   narrower than md always gets the mobile card regardless of capability. */
 .fridge-door {
   display: none;
 }
@@ -510,7 +511,7 @@ body {
   display: block;
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
   .fridge-door {
     display: block;
   }
