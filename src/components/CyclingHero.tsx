@@ -99,20 +99,6 @@ export default function CyclingHero() {
           </Link>
         </div>
 
-        <div className="mt-6 flex items-center gap-2 md:hidden">
-          {PHRASES.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Show phrase ${i + 1}`}
-              aria-current={i === index}
-              onClick={() => setIndex(i)}
-              className={`h-2.5 rounded-full transition-all ${
-                i === index ? "w-6 bg-fridge-orange" : "w-2.5 bg-white/25"
-              }`}
-            />
-          ))}
-        </div>
       </div>
     </div>
   );
