@@ -1,15 +1,18 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import { usePresence } from "@/lib/usePresence";
+import { createLocalStore } from "@/lib/localStore";
 import { AUDIENCES, AUDIENCE_LABELS, isAudience, matchesAudience, type Audience } from "@/lib/audience";
 import type { ProductRow } from "@/db/schema";
 
 type SortOption = "newest" | "price-asc" | "price-desc";
+type GridDensity = "cozy" | "compact";
 
 const SWIPE_CLOSE_PX = 80;
+const densityStore = createLocalStore<GridDensity>("fridge-shop-density", "cozy");
 
 function audienceFromParams(searchParams: URLSearchParams): Audience | "all" {
   const a = searchParams.get("audience");
@@ -34,6 +37,11 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState<SortOption>("newest");
+  const density = useSyncExternalStore(
+    densityStore.subscribe,
+    densityStore.getSnapshot,
+    densityStore.getServerSnapshot,
+  );
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const { shouldRender: sheetMounted, visible: sheetVisible } = usePresence(filterSheetOpen, 300);
   const dragStartY = useRef<number | null>(null);
@@ -162,6 +170,30 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
         </select>
+        <div className="flex shrink-0 items-center border border-frost">
+          <button
+            type="button"
+            aria-label="Show 2 per row"
+            aria-pressed={density === "cozy"}
+            onClick={() => densityStore.setValue("cozy")}
+            className={`flex h-9 w-9 items-center justify-center transition-colors ${
+              density === "cozy" ? "bg-fridge-orange text-black" : "text-ice-300"
+            }`}
+          >
+            <GridIcon cols={2} />
+          </button>
+          <button
+            type="button"
+            aria-label="Show 3 per row"
+            aria-pressed={density === "compact"}
+            onClick={() => densityStore.setValue("compact")}
+            className={`flex h-9 w-9 items-center justify-center border-l border-frost transition-colors ${
+              density === "compact" ? "bg-fridge-orange text-black" : "text-ice-300"
+            }`}
+          >
+            <GridIcon cols={3} />
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[240px_1fr]">
@@ -200,7 +232,11 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
           {filtered.length === 0 ? (
             <p className="text-sm text-muted">No products match these filters.</p>
           ) : (
-            <div className="grid grid-cols-2 gap-3 md:gap-6 xl:grid-cols-3">
+            <div
+              className={`grid gap-3 md:gap-6 md:grid-cols-2 xl:grid-cols-3 ${
+                density === "compact" ? "grid-cols-3" : "grid-cols-2"
+              }`}
+            >
               {filtered.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
@@ -391,6 +427,26 @@ function FilterPanelContent({
         </div>
       </FilterGroup>
     </>
+  );
+}
+
+function GridIcon({ cols }: { cols: 2 | 3 }) {
+  const bars = cols === 2 ? [0, 1] : [0, 1, 2];
+  const width = cols === 2 ? 6 : 3.5;
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      {bars.map((i) => (
+        <rect
+          key={i}
+          x={i * (width + 1.5)}
+          y="1"
+          width={width}
+          height="14"
+          rx="1"
+          fill="currentColor"
+        />
+      ))}
+    </svg>
   );
 }
 
