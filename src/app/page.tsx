@@ -14,11 +14,11 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      <section className="mx-auto flex max-w-7xl flex-col justify-center px-6 pb-8 pt-12 md:block md:min-h-0 md:pb-20 md:pt-24">
+      <section className="mx-auto flex max-w-7xl flex-col justify-center px-6 pb-12 pt-16 md:block md:min-h-0 md:pb-20 md:pt-24">
         <HeroCarousel />
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-6 md:py-12">
+      <section className="mx-auto max-w-7xl px-6 py-10 md:py-12">
         <h2 className="font-display text-2xl tracking-wide">SHOP BY</h2>
         <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-6">
           <FridgeDoor audience="men" side="left" label={AUDIENCE_LABELS.men} />
@@ -26,7 +26,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-6 md:py-12">
+      <section className="mx-auto max-w-7xl px-6 py-10 md:py-12">
         <div className="flex items-baseline justify-between">
           <h2 className="font-display text-2xl tracking-wide">FRESH DROPS</h2>
           <Link

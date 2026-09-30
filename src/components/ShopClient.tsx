@@ -154,17 +154,17 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
         {filtered.length} {filtered.length === 1 ? "style" : "styles"}
       </p>
 
-      <div className="sticky top-14 z-20 -mx-6 mt-4 flex items-center gap-2 border-y border-frost bg-background/95 px-6 py-3 md:hidden">
+      <div className="sticky top-14 z-20 -mx-6 mt-4 flex items-center gap-2 border-y border-frost bg-background/95 px-6 py-3 max-[374px]:gap-1 md:hidden">
         <button
           onClick={() => setFilterSheetOpen(true)}
-          className="flex flex-1 items-center justify-center gap-1.5 border border-frost px-4 py-2.5 text-sm font-bold tracking-wide text-ice-100"
+          className="flex flex-1 items-center justify-center gap-1.5 border border-frost px-4 py-2.5 text-sm font-bold tracking-wide text-ice-100 max-[374px]:px-2"
         >
           FILTER{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
         </button>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortOption)}
-          className="border border-frost bg-background px-3 py-2.5 text-sm outline-none focus:border-fridge-orange"
+          className="min-w-0 border border-frost bg-background px-3 py-2.5 text-sm outline-none focus:border-fridge-orange max-[374px]:px-1 max-[374px]:text-xs"
         >
           <option value="newest">Newest</option>
           <option value="price-asc">Price: Low to High</option>
@@ -176,7 +176,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
             aria-label="Show 2 per row"
             aria-pressed={density === "cozy"}
             onClick={() => densityStore.setValue("cozy")}
-            className={`flex h-9 w-9 items-center justify-center transition-colors ${
+            className={`flex h-9 w-9 items-center justify-center transition-colors max-[374px]:h-8 max-[374px]:w-8 ${
               density === "cozy" ? "bg-fridge-orange text-black" : "text-ice-300"
             }`}
           >
@@ -187,7 +187,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
             aria-label="Show 3 per row"
             aria-pressed={density === "compact"}
             onClick={() => densityStore.setValue("compact")}
-            className={`flex h-9 w-9 items-center justify-center border-l border-frost transition-colors ${
+            className={`flex h-9 w-9 items-center justify-center border-l border-frost transition-colors max-[374px]:h-8 max-[374px]:w-8 ${
               density === "compact" ? "bg-fridge-orange text-black" : "text-ice-300"
             }`}
           >

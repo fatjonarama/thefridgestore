@@ -66,7 +66,7 @@ export default function Header({
         scrolled ? "glass-scrolled" : ""
       } ${hidden ? "-translate-y-full" : "translate-y-0"}`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-[6px] sm:px-6 md:py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-[6px] max-[374px]:gap-1 max-[374px]:px-2 sm:px-6 md:py-4">
         <Link href="/" className="flex shrink-0 items-center">
           <span className="whitespace-nowrap font-display text-lg tracking-wide sm:text-2xl">
             THE FR
@@ -89,25 +89,25 @@ export default function Header({
           ))}
         </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-1.5 max-[374px]:gap-0.5 sm:gap-3">
           <button
             aria-label="Open menu"
             onClick={onMenuClick}
-            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:hidden"
+            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange max-[374px]:h-10 max-[374px]:w-10 md:hidden"
           >
             <MenuIcon />
           </button>
           <button
             aria-label="Search"
             onClick={onSearchClick}
-            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:h-9 md:w-9 md:border md:border-frost md:hover:border-fridge-orange"
+            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange max-[374px]:h-10 max-[374px]:w-10 md:h-9 md:w-9 md:border md:border-frost md:hover:border-fridge-orange"
           >
             <SearchIcon />
           </button>
           <Link
             href="/wishlist"
             aria-label="Wishlist"
-            className="relative flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:h-9 md:w-9 md:border md:border-frost md:hover:border-fridge-orange"
+            className="relative flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange max-[374px]:h-10 max-[374px]:w-10 md:h-9 md:w-9 md:border md:border-frost md:hover:border-fridge-orange"
           >
             <HeartIcon />
             {slugs.length > 0 && (
@@ -119,7 +119,7 @@ export default function Header({
           <Link
             href="/account"
             aria-label="Account"
-            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange sm:hidden"
+            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange max-[374px]:h-10 max-[374px]:w-10 sm:hidden"
           >
             <UserIcon />
           </Link>
@@ -151,7 +151,7 @@ export default function Header({
             data-cart-anchor
             aria-label={`Cart (${count})`}
             onClick={openCart}
-            className={`relative flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange md:hidden ${
+            className={`relative flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange max-[374px]:h-10 max-[374px]:w-10 md:hidden ${
               cartPulse ? "ice-crack" : ""
             }`}
           >
