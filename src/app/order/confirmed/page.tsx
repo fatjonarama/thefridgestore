@@ -23,8 +23,7 @@ export default async function OrderConfirmedPage({
           : "We'll reach out shortly to confirm and arrange payment."}
       </p>
       <p className="mt-2 text-sm text-white/40">
-        Payment is arranged directly with us — cash on delivery, bank transfer, or
-        WhatsApp — nothing is charged online.
+        Payment is cash on delivery — nothing is charged online.
       </p>
 
       {!user && (
