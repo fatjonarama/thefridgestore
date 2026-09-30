@@ -35,8 +35,8 @@ export default async function OrderConfirmedPage({
 
       {!user && (
         <p className="mx-auto mt-6 max-w-md border border-frost px-5 py-4 text-sm text-white/60">
-          You checked out as a guest, so this order won&apos;t show up in an order
-          history.{" "}
+          You checked out as a guest, so this order won&apos;t show up in your
+          order history.{" "}
           <Link href="/login" className="font-bold text-fridge-orange hover:underline">
             Sign in or create an account
           </Link>{" "}
