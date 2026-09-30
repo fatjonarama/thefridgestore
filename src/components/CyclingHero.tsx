@@ -81,7 +81,7 @@ export default function CyclingHero() {
           ))}
         </h1>
         <div
-          className="hero-in mt-14 flex flex-wrap items-center gap-4 md:mt-10"
+          className="hero-in mt-20 flex flex-wrap items-center gap-4 md:mt-10"
           style={{ "--hero-delay": "1350ms" } as React.CSSProperties}
         >
           <Link
