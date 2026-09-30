@@ -4,15 +4,13 @@ import FridgeDoor from "@/components/FridgeDoor";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import { getActiveProducts } from "@/db/queries";
-import { AUDIENCE_LABELS, matchesAudience } from "@/lib/audience";
+import { AUDIENCE_LABELS } from "@/lib/audience";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const activeProducts = await getActiveProducts();
   const freshDrops = activeProducts.filter((p) => p.isNew);
-  const menCount = activeProducts.filter((p) => matchesAudience(p.audience, "men")).length;
-  const womenCount = activeProducts.filter((p) => matchesAudience(p.audience, "women")).length;
 
   return (
     <main className="flex-1">
@@ -23,8 +21,8 @@ export default async function Home() {
       <section className="mx-auto max-w-7xl px-6 py-6 md:py-12">
         <h2 className="font-display text-2xl tracking-wide">SHOP BY</h2>
         <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-6">
-          <FridgeDoor audience="men" side="left" label={AUDIENCE_LABELS.men} count={menCount} />
-          <FridgeDoor audience="women" side="right" label={AUDIENCE_LABELS.women} count={womenCount} />
+          <FridgeDoor audience="men" side="left" label={AUDIENCE_LABELS.men} />
+          <FridgeDoor audience="women" side="right" label={AUDIENCE_LABELS.women} />
         </div>
       </section>
 

@@ -1,7 +1,6 @@
 "use client";
 
 import CyclingHero from "@/components/CyclingHero";
-import SnowParticles from "@/components/SnowParticles";
 
 export default function HeroCarousel() {
   return (
@@ -17,7 +16,6 @@ export default function HeroCarousel() {
               "radial-gradient(45% 18% at 50% 20%, rgba(91,184,232,0.24), transparent)",
           }}
         />
-        <SnowParticles />
       </div>
 
       <CyclingHero />

@@ -7,6 +7,7 @@ import AmbientGlow from "@/components/AmbientGlow";
 import FridgeIntro from "@/components/FridgeIntro";
 import SiteChrome from "@/components/SiteChrome";
 import SiteFooter from "@/components/SiteFooter";
+import SnowParticles from "@/components/SnowParticles";
 import { getCurrentUser } from "@/lib/auth";
 
 const anton = Anton({
@@ -37,6 +38,9 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
         <FridgeIntro />
         <div aria-hidden="true" className="ice-texture" />
+        <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <SnowParticles />
+        </div>
         <AmbientGlow />
         <CartProvider>
           <WishlistProvider>

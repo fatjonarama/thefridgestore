@@ -11,12 +11,10 @@ export default function FridgeDoor({
   audience,
   side,
   label,
-  count,
 }: {
   audience: Audience;
   side: "left" | "right";
   label: string;
-  count: number;
 }) {
   const router = useRouter();
   const mobileRef = useRef<HTMLAnchorElement>(null);
@@ -44,7 +42,6 @@ export default function FridgeDoor({
   const handleSide = side === "left" ? "right-3" : "left-3";
   const lightSide = side === "left" ? "right-0" : "left-0";
   const href = `/shop?audience=${audience}`;
-  const pairsLabel = `${count} ${count === 1 ? "PAIR" : "PAIRS"}`;
 
   function handleMobileTap(e: React.MouseEvent) {
     e.preventDefault();
@@ -96,16 +93,12 @@ export default function FridgeDoor({
         ref={mobileRef}
         href={href}
         onClick={handleMobileTap}
-        aria-label={`${label} — ${pairsLabel}`}
+        aria-label={label}
         className={`fridge-door-mobile group relative block min-h-[300px] overflow-hidden rounded-2xl border border-frost bg-glass p-3 ${
           mobileInView ? "in-view" : ""
         } ${tapOpen ? "tap-open" : ""}`}
       >
         <span className="ice-grain pointer-events-none absolute inset-0" />
-
-        <span className="pointer-events-none absolute right-3 top-3 font-mono text-[10px] text-ice-500">
-          −4°C
-        </span>
 
         <span
           className={`fridge-door-mobile-handle pointer-events-none absolute bottom-4 top-9 ${handleSide} w-1.5 rounded-full bg-[linear-gradient(90deg,#7c8a97,#eef3f6,#7c8a97)]`}
@@ -114,11 +107,10 @@ export default function FridgeDoor({
           className={`fridge-door-mobile-light glow-pulse pointer-events-none absolute inset-y-0 ${lightSide} w-14 opacity-40 bg-[radial-gradient(closest-side,rgba(91,184,232,0.5),transparent)]`}
         />
 
-        <span className="relative flex min-h-[264px] flex-col items-center justify-center gap-2 text-center">
+        <span className="relative flex min-h-[264px] flex-col items-center justify-center text-center">
           <span className="fridge-door-mobile-word font-display text-2xl tracking-wide">
             {label.toUpperCase()}
           </span>
-          <span className="text-[11px] font-semibold tracking-wide text-ice-300">{pairsLabel}</span>
         </span>
       </Link>
     </>
