@@ -116,6 +116,13 @@ export default function Header({
               </span>
             )}
           </Link>
+          <Link
+            href="/account"
+            aria-label="Account"
+            className="flex h-11 w-11 items-center justify-center text-ice-300 transition-colors hover:text-fridge-orange sm:hidden"
+          >
+            <UserIcon />
+          </Link>
           {user?.isAdmin && (
             <Link
               href="/admin"

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/auth";
 
 export default async function OrderConfirmedPage({
   searchParams,
@@ -6,6 +7,7 @@ export default async function OrderConfirmedPage({
   searchParams: Promise<{ phone?: string }>;
 }) {
   const { phone } = await searchParams;
+  const user = await getCurrentUser();
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-24 text-center">
@@ -24,6 +26,18 @@ export default async function OrderConfirmedPage({
         Payment is arranged directly with us — cash on delivery, bank transfer, or
         WhatsApp — nothing is charged online.
       </p>
+
+      {!user && (
+        <p className="mx-auto mt-6 max-w-md border border-frost px-5 py-4 text-sm text-white/60">
+          You checked out as a guest, so this order won&apos;t show up in an order
+          history.{" "}
+          <Link href="/login" className="font-bold text-fridge-orange hover:underline">
+            Sign in or create an account
+          </Link>{" "}
+          if you&apos;d like to track this and future orders.
+        </p>
+      )}
+
       <Link
         href="/"
         className="mt-8 inline-block bg-fridge-orange px-8 py-4 text-sm font-bold tracking-wide text-black hover:brightness-110"
