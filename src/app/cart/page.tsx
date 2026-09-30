@@ -42,7 +42,7 @@ export default function CartPage() {
 
     setSubmitting(true);
     try {
-      await createOrder({
+      const result = await createOrder({
         customerName: customerName.trim(),
         phone: phone.trim(),
         email: email.trim() || undefined,
@@ -57,6 +57,11 @@ export default function CartPage() {
           qty: line.qty,
         })),
       });
+      if (!result.ok) {
+        setSubmitError(result.error);
+        setSubmitting(false);
+        return;
+      }
       clearCart();
       router.push(
         `/order/confirmed?phone=${encodeURIComponent(phone.trim())}&country=${encodeURIComponent(country)}`,
