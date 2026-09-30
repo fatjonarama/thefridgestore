@@ -1,4 +1,5 @@
 import { BRANDS } from "@/lib/brands";
+import { isAudience } from "@/lib/audience";
 import type { ProductInput } from "@/db/adminMutations";
 
 export function validateProductInput(
@@ -8,7 +9,7 @@ export function validateProductInput(
   const b = body as Record<string, unknown>;
 
   if (typeof b.name !== "string" || !b.name.trim()) return { error: "Name is required." };
-  if (b.audience !== "men" && b.audience !== "women" && b.audience !== "kids") {
+  if (typeof b.audience !== "string" || !isAudience(b.audience)) {
     return { error: "Invalid audience." };
   }
   if (typeof b.priceCents !== "number" || !Number.isFinite(b.priceCents) || b.priceCents <= 0) {

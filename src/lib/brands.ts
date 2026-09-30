@@ -41,6 +41,7 @@ export const BRANDS = [
   "Hogan",
   "Dolce & Gabbana",
   "Diesel",
+  "DSquared2",
   "Alexander McQueen",
   "BALR.",
   "Other",

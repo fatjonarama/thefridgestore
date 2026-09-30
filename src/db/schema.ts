@@ -8,7 +8,7 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-export const audienceEnum = pgEnum("audience", ["men", "women", "kids"]);
+export const audienceEnum = pgEnum("audience", ["men", "women", "unisex", "kids"]);
 export const orderStatusEnum = pgEnum("order_status", [
   "pending",
   "confirmed",

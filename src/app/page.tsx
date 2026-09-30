@@ -4,15 +4,15 @@ import FridgeDoor from "@/components/FridgeDoor";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import { getActiveProducts } from "@/db/queries";
-import { AUDIENCE_LABELS } from "@/lib/audience";
+import { AUDIENCE_LABELS, matchesAudience } from "@/lib/audience";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const activeProducts = await getActiveProducts();
-  const freshDrops = activeProducts.filter((p) => p.isNew).slice(0, 3);
-  const menCount = activeProducts.filter((p) => p.audience === "men").length;
-  const womenCount = activeProducts.filter((p) => p.audience === "women").length;
+  const freshDrops = activeProducts.filter((p) => p.isNew);
+  const menCount = activeProducts.filter((p) => matchesAudience(p.audience, "men")).length;
+  const womenCount = activeProducts.filter((p) => matchesAudience(p.audience, "women")).length;
   const featuredProduct = activeProducts.find((p) => p.images.length > 0);
 
   return (

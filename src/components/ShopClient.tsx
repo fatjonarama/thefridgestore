@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import { usePresence } from "@/lib/usePresence";
-import { AUDIENCES, AUDIENCE_LABELS, isAudience, type Audience } from "@/lib/audience";
+import { AUDIENCES, AUDIENCE_LABELS, isAudience, matchesAudience, type Audience } from "@/lib/audience";
 import type { ProductRow } from "@/db/schema";
 
 type SortOption = "newest" | "price-asc" | "price-desc";
@@ -50,7 +50,7 @@ export default function ShopClient({ products }: { products: ProductRow[] }) {
   }
 
   const audienceProducts = useMemo(
-    () => (audience === "all" ? products : products.filter((p) => p.audience === audience)),
+    () => (audience === "all" ? products : products.filter((p) => matchesAudience(p.audience, audience))),
     [products, audience],
   );
 

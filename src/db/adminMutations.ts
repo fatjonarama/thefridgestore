@@ -2,6 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { orderItems, orders, products, type OrderStatus } from "@/db/schema";
+import type { Audience } from "@/lib/audience";
 import { slugify } from "@/lib/slugify";
 
 // Plain server-only module (no "use server") — these are admin mutations,
@@ -12,7 +13,7 @@ export type ProductInput = {
   slug: string;
   name: string;
   brand: string;
-  audience: "men" | "women" | "kids";
+  audience: Audience;
   priceCents: number;
   compareAtCents?: number | null;
   description: string;
