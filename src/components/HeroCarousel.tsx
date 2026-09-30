@@ -3,7 +3,7 @@
 import CyclingHero from "@/components/CyclingHero";
 import SnowParticles from "@/components/SnowParticles";
 
-export default function HeroCarousel({ featuredImage }: { featuredImage?: string }) {
+export default function HeroCarousel() {
   return (
     <div className="relative">
       <div
@@ -20,7 +20,7 @@ export default function HeroCarousel({ featuredImage }: { featuredImage?: string
         <SnowParticles />
       </div>
 
-      <CyclingHero featuredImage={featuredImage} />
+      <CyclingHero />
     </div>
   );
 }

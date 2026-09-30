@@ -13,12 +13,11 @@ export default async function Home() {
   const freshDrops = activeProducts.filter((p) => p.isNew);
   const menCount = activeProducts.filter((p) => matchesAudience(p.audience, "men")).length;
   const womenCount = activeProducts.filter((p) => matchesAudience(p.audience, "women")).length;
-  const featuredProduct = activeProducts.find((p) => p.images.length > 0);
 
   return (
     <main className="flex-1">
       <section className="mx-auto flex min-h-svh max-w-7xl flex-col justify-center px-6 pb-8 pt-20 md:block md:min-h-0 md:pb-20 md:pt-24">
-        <HeroCarousel featuredImage={featuredProduct?.images[0]} />
+        <HeroCarousel />
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-6 md:py-12">

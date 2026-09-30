@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import HeroLine from "@/components/HeroLine";
 
@@ -32,7 +31,7 @@ function lineStartDelays(lines: string[]) {
   return delays;
 }
 
-export default function CyclingHero({ featuredImage }: { featuredImage?: string }) {
+export default function CyclingHero() {
   const [index, setIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
@@ -114,22 +113,6 @@ export default function CyclingHero({ featuredImage }: { featuredImage?: string 
             />
           ))}
         </div>
-
-        {featuredImage && (
-          <div className="relative mt-8 flex justify-center md:hidden">
-            <span
-              aria-hidden="true"
-              className="glow-pulse pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(91,184,232,0.4),transparent)] opacity-70 blur-2xl"
-            />
-            <Image
-              src={featuredImage}
-              alt=""
-              width={220}
-              height={220}
-              className="relative h-auto w-44 object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
-            />
-          </div>
-        )}
       </div>
     </div>
   );
