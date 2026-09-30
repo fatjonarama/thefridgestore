@@ -14,7 +14,7 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      <section className="mx-auto flex max-w-7xl flex-col justify-center px-6 pb-8 pt-6 md:block md:min-h-0 md:pb-20 md:pt-24">
+      <section className="mx-auto flex max-w-7xl flex-col justify-center px-6 pb-8 pt-12 md:block md:min-h-0 md:pb-20 md:pt-24">
         <HeroCarousel />
       </section>
 
