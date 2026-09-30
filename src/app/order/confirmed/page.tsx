@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
+import { DELIVERY_ESTIMATE_DAYS, isCountry } from "@/lib/shipping";
 
 export default async function OrderConfirmedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ phone?: string }>;
+  searchParams: Promise<{ phone?: string; country?: string }>;
 }) {
-  const { phone } = await searchParams;
+  const { phone, country } = await searchParams;
   const user = await getCurrentUser();
+  const deliveryEstimate = country && isCountry(country) ? DELIVERY_ESTIMATE_DAYS[country] : null;
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-24 text-center">
@@ -25,6 +27,11 @@ export default async function OrderConfirmedPage({
       <p className="mt-2 text-sm text-white/40">
         Payment is cash on delivery — nothing is charged online.
       </p>
+      {deliveryEstimate && (
+        <p className="mt-2 text-sm text-white/40">
+          Estimated delivery to {country}: {deliveryEstimate}
+        </p>
+      )}
 
       {!user && (
         <p className="mx-auto mt-6 max-w-md border border-frost px-5 py-4 text-sm text-white/60">

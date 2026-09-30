@@ -58,7 +58,9 @@ export default function CartPage() {
         })),
       });
       clearCart();
-      router.push(`/order/confirmed?phone=${encodeURIComponent(phone.trim())}`);
+      router.push(
+        `/order/confirmed?phone=${encodeURIComponent(phone.trim())}&country=${encodeURIComponent(country)}`,
+      );
     } catch {
       setSubmitError("Something went wrong submitting your order. Please try again.");
       setSubmitting(false);
