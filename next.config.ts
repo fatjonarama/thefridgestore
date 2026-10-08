@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -18,7 +19,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data:;
   font-src 'self';
-  connect-src 'self';
+  connect-src 'self' https://*.ingest.sentry.io https://*.ingest.de.sentry.io https://*.ingest.us.sentry.io;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -57,4 +58,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: "noname-coo",
+  project: "thefridge",
+  // No SENTRY_AUTH_TOKEN is configured, so source map upload is skipped
+  // (the plugin degrades gracefully, it doesn't fail the build) -- stack
+  // traces in Sentry will show minified code until that's added later.
+  silent: true,
+});
