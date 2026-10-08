@@ -22,8 +22,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://thefridge.store"),
   title: "The Fridge — Cold. Fresh. Yours.",
   description: "Street-ready kicks built for the pavement.",
+  openGraph: {
+    title: "The Fridge — Cold. Fresh. Yours.",
+    description: "Street-ready kicks built for the pavement.",
+    url: "https://thefridge.store",
+    siteName: "The Fridge",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Fridge — Cold. Fresh. Yours.",
+    description: "Street-ready kicks built for the pavement.",
+  },
 };
 
 export default async function RootLayout({
