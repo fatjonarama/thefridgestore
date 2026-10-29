@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { orderItems, orders, products } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
 import { SHIPPING_CENTS, type Country } from "@/lib/shipping";
+import { notifyNewOrder } from "@/lib/telegram";
 
 export type OrderItemInput = {
   productId: number | null;
@@ -128,5 +129,15 @@ export async function createOrder(input: OrderInput): Promise<CreateOrderResult>
 
   revalidatePath("/admin/orders");
   revalidatePath("/shop");
+
+  await notifyNewOrder({
+    orderId: order.id,
+    customerName: input.customerName,
+    phone: input.phone,
+    country: input.country,
+    address: input.address,
+    totalCents,
+  });
+
   return { ok: true, orderId: order.id };
 }
