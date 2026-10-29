@@ -1,5 +1,12 @@
 import * as Sentry from "@sentry/nextjs";
 
+type OrderItemNotification = {
+  name: string;
+  brand: string;
+  size: string;
+  qty: number;
+};
+
 type OrderNotification = {
   orderId: number;
   customerName: string;
@@ -7,6 +14,7 @@ type OrderNotification = {
   country: string;
   address: string;
   totalCents: number;
+  items: OrderItemNotification[];
 };
 
 function escapeHtml(value: string): string {
@@ -26,8 +34,15 @@ export async function notifyNewOrder(order: OrderNotification): Promise<void> {
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return;
 
+  const itemLines = order.items.map((item) => {
+    const brand = item.brand ? `${escapeHtml(item.brand)} ` : "";
+    return `• ${brand}${escapeHtml(item.name)} — Size ${escapeHtml(item.size)} x${item.qty}`;
+  });
+
   const text = [
     `🧊 <b>New order #${order.orderId}</b>`,
+    "",
+    ...itemLines,
     "",
     `Customer: ${escapeHtml(order.customerName)}`,
     `Phone: ${escapeHtml(order.phone)}`,

@@ -58,7 +58,7 @@ export async function createOrder(input: OrderInput): Promise<CreateOrderResult>
   // id is looked up against the real product row so a tampered cart (or a
   // direct call to this action) can't under-price an order or drain stock
   // on an arbitrary product.
-  const resolvedItems: { productId: number; name: string; size: string; priceCents: number; qty: number }[] = [];
+  const resolvedItems: { productId: number; name: string; brand: string; size: string; priceCents: number; qty: number }[] = [];
   for (const item of input.items) {
     const product = item.productId !== null ? productById.get(item.productId) : undefined;
     if (!product || !product.active) {
@@ -83,6 +83,7 @@ export async function createOrder(input: OrderInput): Promise<CreateOrderResult>
     resolvedItems.push({
       productId: product.id,
       name: product.name,
+      brand: product.brand,
       size: item.size,
       priceCents: product.priceCents,
       qty: item.qty,
@@ -137,6 +138,12 @@ export async function createOrder(input: OrderInput): Promise<CreateOrderResult>
     country: input.country,
     address: input.address,
     totalCents,
+    items: resolvedItems.map((item) => ({
+      name: item.name,
+      brand: item.brand,
+      size: item.size,
+      qty: item.qty,
+    })),
   });
 
   return { ok: true, orderId: order.id };
