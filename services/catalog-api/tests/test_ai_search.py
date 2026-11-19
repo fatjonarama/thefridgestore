@@ -24,3 +24,15 @@ def test_falls_back_to_keywords_without_api_key(client):
 
 def test_validates_query_length(client):
     assert client.post("/search/ai", json={"query": "x" * 500}).status_code == 422
+
+
+def test_rate_limits_ai_search(client):
+    from app.ratelimit import ai_limiter
+
+    for _ in range(ai_limiter.max_requests):
+        assert client.post("/search/ai", json={"query": "retro"}).status_code == 200
+    resp = client.post("/search/ai", json={"query": "retro"})
+    assert resp.status_code == 429
+    assert int(resp.headers["Retry-After"]) >= 1
+    # Other endpoints are unaffected.
+    assert client.get("/products").status_code == 200

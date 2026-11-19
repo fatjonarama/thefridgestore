@@ -15,6 +15,7 @@ same Postgres (Neon) database as the Next.js app and adds:
 |---|---|
 | AI safety | Claude never writes SQL. It fills a Pydantic model through **structured outputs**, and our code builds a parameterised SQLAlchemy query from it. A prompt-injection attempt can only produce valid filters. |
 | AI resilience | If the API key is missing, the API errors, it rate-limits us, or Claude declines, the endpoint **falls back to keyword search** and reports `engine: "keyword_fallback"`. Server-side refusal fallbacks are on as well. |
+| Abuse/cost control | `/search/ai` is rate-limited per client IP (sliding window, default 10/min, `429` + `Retry-After`). Behind a proxy, set `FORWARDED_ALLOW_IPS` so the real client IP is used and a spoofed `X-Forwarded-For` header is ignored. |
 | Cost/latency | Effort is set to `low` (simple extraction), queries are capped at 200 chars, and there is a 20 s timeout with 2 retries. |
 | Schema ownership | Drizzle (`src/db/schema.ts`) owns migrations. This service maps the tables read-only and never runs `create_all` against production. |
 | SQL injection / wildcards | Everything is a bound parameter, and `%`/`_` in user search terms are escaped so they don't act as LIKE wildcards. |
@@ -57,6 +58,6 @@ The image runs as a non-root user. It works on any container host (Render, Fly.i
 
 ## Next steps
 
-- Per-IP rate limiting on `/search/ai`, because every call costs money (e.g. `slowapi` or at the edge).
+- Move rate limiting to Redis or the edge once there is more than one instance.
 - A read-only Postgres role for this service.
 - Call `/search/ai` from the Next.js `SearchOverlay`.

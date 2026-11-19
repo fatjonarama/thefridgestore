@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     anthropic_api_key: str | None = None
     admin_api_key: str | None = None
     claude_model: str = "claude-opus-5-5"
+    ai_rate_limit_per_minute: int = 10
 
 
 @lru_cache

@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app import ai
 from app.db import get_db
 from app.models import Product
+from app.ratelimit import limit_ai_search
 from app.repository import order_stats, search_products
 from app.schemas import (
     AISearchRequest,
@@ -88,7 +89,7 @@ def get_product(slug: str, db: DB) -> ProductOut:
     return _product_out(product)
 
 
-@app.post("/search/ai", response_model=AISearchResponse)
+@app.post("/search/ai", response_model=AISearchResponse, dependencies=[Depends(limit_ai_search)])
 def ai_search(body: AISearchRequest, db: DB) -> AISearchResponse:
     try:
         filters = ai.parse_query(body.query)

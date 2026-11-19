@@ -13,6 +13,7 @@ from sqlalchemy.pool import StaticPool
 from app.db import Base, get_db
 from app.main import app
 from app.models import Order, OrderItem, Product
+from app.ratelimit import ai_limiter
 
 PRODUCTS = [
     dict(slug="blackout-04", name="Blackout 04", brand="Fridge", audience="men", price_cents=12800,
@@ -53,6 +54,7 @@ def db():
 
 @pytest.fixture()
 def client(db):
+    ai_limiter.reset()
     app.dependency_overrides[get_db] = lambda: db
     yield TestClient(app)
     app.dependency_overrides.clear()
