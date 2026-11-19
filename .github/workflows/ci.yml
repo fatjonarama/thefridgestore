@@ -26,3 +26,20 @@ jobs:
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build
+
+  catalog-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/catalog-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: services/catalog-api/requirements-dev.txt
+
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
